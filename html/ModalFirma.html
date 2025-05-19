@@ -1,0 +1,34 @@
+    
+    
+    
+<!-- Modal para las firmas  -->
+    <div class="modal fade" id="ModalFirma" tabindex="-1" aria-labelledby="CampoFirma" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+          <div class="modal-content">
+            <div class="modal-header">
+
+              <h5 class="modal-title" id="TituloError">Firma</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" >
+              <form class="formulario_modal  col-12 col-md-12 mt-3">
+
+                <label for="codigo" class="form-label">Código</label>
+                <input type="text" class="form-control border-secondary" id="codigo" aria-describedby="codigo" value="" required="">
+                <br>
+                <label for="wrapperFirma" class="form-label">Firma</label><br>
+                <div class="wrapper" id="wrapperFirma">
+                    <canvas id="signature-pad" ></canvas>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button> 
+                <button type="button" id="btnGuardarFirma"  class="btn btn-primary">Guardar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+     
+    

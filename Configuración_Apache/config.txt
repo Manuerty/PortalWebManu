@@ -1,0 +1,172 @@
+Pasos a seguir par alojar dos dominios en apache
+
+
+Descargar ubuntu LTS de: https://ubuntu.com/download/desktop (en caso de que no funcione la dirección ir a la pagina oficial)
+
+Descargar e Instalar virtualbox de: https://www.virtualbox.org/wiki/Downloads 
+
+Crear la maquina con la ISO y configurar los parametros con 2 adaptadores de red Con adaptador puente ambas.
+
+Al tener la maquina lista instalar apache ejecutando el siguiente comando en la terminal.
+    -> sudo apt install apache2
+
+Creamos una carpeta en /var/www/miproyecto y el archivo HTML en la carpeta o los archivos de un proyecto y le adjudicamos los permisos "sudo chmod 777 " al directorio corespondiente
+ -> /var/www/miproyecto
+ -> sudo chmod 777 miproyecto cd
+
+Hacemos una copia /etc/apache2/sites-available/000-default.conf con otro nombre e configuraremos el archivo con otro nombre
+-> sudo cp 000-default.conf portal_emp.conf
+
+abrimos el archivo para editarlo con
+-> sudo gedit portal_emp.conf
+
+Configuramos los diferentes virtualhosts de diferntes maneras.
+modificamos el document root a /var/www/"Nombre del sitio"
+y añadimos lo siguiente al final
+<VirtualHost #ip>
+    ServerName www.ejemplo.com
+    ServerAdmin tunombre@example.com
+    DocumentRoot /var/www/miproyecto
+</VirtualHost>
+Siendo el #ip la ip del segundo adaptador de red que hemos configurado.
+
+Sera necesario:
+ - admitir la configuracion "sudo a2ensite ejemplo.conf" 
+ - Desactivar la otra configuracion "sudo a2dissite 000-default.conf"
+ - reiniciar el servicio con:
+    -> service apache2 reload
+
+Es necesario modificar la resolucion con los nombre definidos en los deferentes VirtualHostsen en la maquina windows C:\Windows\System32\drivers\etc\hosts 
+con la ip del segundo adaptador de red de la MV e DNS
+ejemplo 	192.168.204.178	www.portaldelempleado.de
+
+
+Esto sera necesario si los dominios no estan distribuidos en Internet
+
+Instalar php: https://blogubuntu.com/como-instalar-php-8-1-en-ubuntu-20-04  
+-> sudo add-apt-repository ppa:ondrej/php
+-> sudo apt install php8.2
+
+
+Comprueba con un archivo .php simple se ejecuta adecuadamente.
+
+Instalar sql siguiendo estos pasos: https://learn.microsoft.com/es-es/sql/connect/php/installation-tutorial-linux-mac?view=sql-server-ver16#installing-on-ubuntu-with-php-fpm
+ -> sudo su
+ -> add-apt-repository ppa:ondrej/php -y
+ -> apt update
+ -> apt install php8.2-dev php8.2-fpm php8.2-xml -y --allow-unauthenticated
+instalamos curl
+-> sudo apt install curl
+crear un archivo bash para ejecutarlo
+ -> sudo gedit mecagoentodo.sh
+
+y pegamos elsiguiente codigo 
+        #!/bin/bash
+        if ! [[ "18.04 20.04 22.04 23.04" == *"$(lsb_release -rs)"* ]];
+        then
+            echo "Ubuntu $(lsb_release -rs) is not currently supported.";
+            exit;
+        fi
+        
+        curl https://packages.microsoft.com/keys/microsoft.asc | sudo tee /etc/apt/trusted.gpg.d/microsoft.asc
+        
+        curl https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list
+        
+        sudo apt update
+        sudo ACCEPT_EULA=Y apt install -y msodbcsql18
+        # optional: for bcp and sqlcmd
+        sudo ACCEPT_EULA=Y apt install -y mssql-tools18
+        echo 'export PATH="$PATH:/opt/mssql-tools18/bin"' >> ~/.bashrc
+        source ~/.bashrc
+        # optional: for unixODBC development headers
+        sudo apt install -y unixodbc-dev
+
+ejecutar los sigguientes comandos:
+ -> sudo chmod 777 mecagoentodo.sh
+ -> ./mecagoentodo.sh
+
+ejecutar los siguientes comandos una vez ejecutado el bash
+ -> sudo pecl config-set php_ini /etc/php/8.2/fpm/php.ini
+ -> sudo pecl install sqlsrv
+ -> sudo pecl install pdo_sqlsrv
+ -> sudo su
+ -> printf "; priority=20\nextension=sqlsrv.so\n" > /etc/php/8.2/mods-available/sqlsrv.ini
+ -> printf "; priority=30\nextension=pdo_sqlsrv.so\n" > /etc/php/8.2/mods-available/pdo_sqlsrv.ini
+ -> exit
+ -> sudo phpenmod -v 8.2 sqlsrv pdo_sqlsrv
+
+comprobamos que se han creado los archivos
+ -> ls /etc/php/8.2/fpm/conf.d/*sqlsrv.ini
+
+y comprobamos que solo tengamos una carpeta de php
+-> ls /etc/php
+
+Se reinicia el php
+ -> sudo systemctl restart php8.2-fpm
+
+Configurar el archivo /etc/php/"version-de-php"/apache2/php.ini con las extensiones necesarias.
+y descomentar las extensiones de fileinfo y de pdo_odbc
+y añadir al final de las extensiones extension=sqlsrv.so y extension=pdo_sqlsrv.so
+
+en el mismo archivo buscamos session.save_path y descomentamos en que tiene la ruta, lo anterior es para ver las sesiones,
+ahora buscamos display_errors y le asignamos el valor On
+
+Configurar el OpenSS: https://github.com/microsoft/msphpsql/issues/1462#issuecomment-1645992247
+Abrimos el archivo /etc/ssl/openssl.cnf
+al inicio del archivo modificamos 
+    openssl_conf = default_conf
+al final del archivo modificamos 
+    [default_conf]
+    ssl_conf = ssl_sect
+    
+    [system_default_sect]
+    MinProtocol = TLSv1.1
+    CipherString = DEFAULT@SECLEVEL=0
+    
+    [openssl_init]
+    providers = provider_sect
+
+y justo arriba de system_default_sect añadimos
+    [ssl_sect]
+    system_default = system_default_sect
+
+reiniciar el servicio apache 
+ -> service apache2 reload
+Comprueba con un archivo .php simple con una conexion SQL se ejecuta adecuadamente.
+
+
+Actualizar carpeta con los nuevos cambios
+ ->git init
+ ->git remote add origin https://github.com/pablolb1998/PortalWeb
+
+Crear script para actualizar automaticamente
+  #!/bin/bash
+    #Ruta de la carpeta local y URL del repositorio
+    carpeta_local="/var/www/portal"
+    repositorio_github="https://github.com/pablolb1998/PortalWeb"
+
+    #Bule infinito para verificar cambios
+    while true
+    do
+        #Actualizar el repositorio local
+        cd "$carpeta_local"
+        git pull origin main
+
+    #Dormir durante un tiempo (por ejemplo, 1 hora) antes de verificar nuevamente
+        sleep 3600
+    done
+
+ -> chmod +x nonbre script
+ -> ./nombrescript
+
+
+
+
+
+
+
+
+
+
+
+

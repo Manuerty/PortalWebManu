@@ -1,0 +1,20 @@
+<div class="modal fade" id="modalFormularioDinamico" tabindex="-1" aria-labelledby="modalDinamico" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" >%TituloModal%</h5>
+            <h5 class="modal-title-modificacion" style="display: none;">%TituloModalModificacion%</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="formulario_modal  col-12 col-md-12 mt-3" %tipoForm%>
+                    %BodyModal%
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="SubmitModalForm" onclick="SubmitModalForm(1)">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>

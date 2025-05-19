@@ -1,0 +1,52 @@
+<!-- Cabecera  -->
+<header>
+  
+  <div class="row justify-content-center">
+    <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+      <div class="card shadow-2-strong shadow">
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <div class="container-fluid">
+            <div class="col-12">
+              <h3 id="titulo_seccion" class="mb-3 mt-2 show" name="titulo_seccion">
+                <button id="flecha_volver" onclick="dibuja_pagina([-1,0])">
+                  <img src="./Img/flecha_back.png"  height="30px" alt="buttonpng"/>
+                </button>
+                %NombreE% (funciona el custom header)
+                
+                  <div style="float: right;" class="dropdown">
+                      <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span style="color: black;" class="navbar-toggler-icon"></span>
+                      </button>
+                      
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        
+                        <div class="input-group">
+                          <input type="text" class="form-control" placeholder="Buscar..." aria-label="Buscar..." id="filtro_txt" >
+                          <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" onclick="aplicafiltros()" ><img src="Img/lupa.png" width="17px"></button>
+                          </div>
+                        </div>
+                      
+                          <span id="filtros_dinamicos"></span>
+                          
+                          <button onclick="dibuja_pagina([-1,-1])" style="color:black;" class="dropdown-item mt-2"><b>Cerrar Sesión</b></button>
+                      </div>
+                  </div>
+              
+
+                
+              </h3>
+
+            </div>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+</div>
+</div>
+</header>

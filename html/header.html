@@ -1,0 +1,52 @@
+<!-- Cabecera  -->
+<div class="" id="header_agrupado">
+%headerCliente%
+  <div class="row justify-content-center" id="no-margin">
+      <div class="col-12 col-lg-9"  id="no-padding">
+        <div class="card shadow-2-strong shadow">
+  
+          <nav class="navbar navbar-expand-lg bg-light">
+            <row class="container-fluid ">
+                  <button id="flecha_header" class="col-2 flecha_volver" onclick="dibuja_pagina([-1,0])">
+                      <img src="./Img/flecha_back.png"   height="30px" alt="buttonpng"/>
+                  </button>
+                  <div id="TxtHeaderPrincipal" class="fs-3 text-truncate col-7 col-lg-10  text-center">%NombreE%</div>
+                  <div id="TxtBoxBuscarHeader" class="fs-3 text-truncate col-7 col-lg-10 text-center d-none position-relative">
+                    <input id="TxtBoxInputBuscarHeader" type="text" class="form-control" placeholder="Buscar...">
+                    
+                    <button id="LupaHeader3" class="btn position-absolute end-0 h-100" style="border: none; background: transparent; padding-right: 40px;" onclick="abrirTxtBoxBuscar()">
+                        <img src="Img/IconosAcciones/Lupa.png" width="20px" onclick="aplicaFiltradoHeader()">
+                    </button>
+                    <button id="LupaHeader2" class="btn position-absolute end-0  h-100" style="border: none; background: transparent; padding-right: 10px;" onclick="otraFuncion()">
+                      <img src="Img/IconosAcciones/Filtro.png" width="20px" onclick="desplegarPanelFiltros()">
+                    </button>
+                </div>
+                  <!-- <div class=" text-truncate fs-3 ">%NombreE%</div> -->
+                  <button id="LupaHeader" class="col-2 flecha_volver %accionBuscarHeader%" onclick="abrirTxtBoxBuscar()">
+                    <img src="Img/IconosAcciones/Lupa.png" width="30px">
+                  </button>
+                  <button id="CruzHeader" class="col-2 flecha_volver d-none">
+                    <img src="Img/IconosAcciones/Cross.png" width="20px" onclick="aplicaFiltradoHeader(1)">
+                  </button>
+                  <div class="btn-group d-flex" >
+                    <button type="button" class="btn  dropdown-toggle col-2" data-bs-toggle="dropdown" aria-expanded="false">
+                      <span style="color: black;" class="navbar-toggler-icon"></span>
+                  </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                      <li class="d-none" id="%btnBuscar%"></li>
+                      <li><span id="filtros_dinamicos"></span></li>
+
+                      <li class="d-none" id="%NombreUsu%"></li>
+                      %CargarUsuario%
+                      <li><button onclick="dibuja_pagina([10.5])" style="color:black;" class="dropdown-item">Mis Datos</button></li>
+                      <li><button onclick="dibuja_pagina([10])" style="color:black;" class="dropdown-item">Cambiar contraseña</button></li>
+                      <li><button onclick="dibuja_pagina([-1,-1])" style="color:black;" class="dropdown-item"><b>Cerrar Sesión</b></button></li>
+                    </ul>
+                  </div>
+              </row>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+  </div>

@@ -1,0 +1,111 @@
+
+/*Color documentos */
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('Poppins/Poppins-Light.ttf') format('truetype');
+}
+
+
+.shadow-custom {
+  box-shadow: 0 0 0 0.25rem rgba(17, 52, 250, 0.5); /* Cambia el valor RGBA para personalizar el color */
+}
+
+#btn-cancelar-form:hover{
+    background-color: azure;
+}
+  
+
+.iconos_footer{
+    margin-bottom: 15px;
+}
+#fondo_texto{
+    background-color: #0065bd;
+}
+.org{
+    color:orange;font-weight:bold;
+}
+.grn{
+    color:green;font-weight:bold;
+}
+
+.blu{
+    color:blue;font-weight:bold;
+}
+.red{
+    color:red;font-weight:bold;
+}
+
+
+.selected {
+    background-color: #5192f3; /* Cambia el color de fondo según tu preferencia */
+    
+}
+  
+#boton_secciones:hover{
+    transform: scale(1.03)
+}
+
+
+.hover-effect:hover {
+    background-color: #a1cbf9; /* Color de fondo cuando se realiza el hover */
+    border-radius: 0.4em;
+}
+
+#cerrar_sesion:link {text-decoration: none;color: black; }
+#cerrar_sesion:visited {color: black;  font-family: arial; text-decoration: none }
+
+.hide_footer {
+    display: none;
+}
+
+#flecha {
+    background-color: rgba(127, 255, 212, 0);
+    border: none;
+    transform: scale(1.4);
+    outline: none;
+}
+
+#flecha:hover {
+    transform: scale(1.4);
+}
+
+
+#lupa_imagen{
+    margin-top: 2.5em;
+    min-width: 1.4em;
+    
+
+}
+#my_Input{
+    width: 15%;
+}
+
+
+.precio {
+    font-weight:bold;
+    float: right;
+
+}
+
+#vencido{
+    color: orange;
+}
+
+#centro_secciones{
+    width: 100%;
+}
+
+#barra_busqueda{
+    float: right;
+}
+#oculto{
+    display: none;
+}
+#borde{
+    border: 1px black;
+}
+
+
+
+

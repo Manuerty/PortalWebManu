@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ES">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Portal Cliente</title>
+  <!-- font awesome  -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous" />
+    <!--Librerias de bootstrap-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E="
+        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>      
+    <!-- Iconos de boostrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css">
+    <!-- <link href='https://unpkg.com/css.gg@2.0.0/icons/css/arrow-left.css' rel='stylesheet'> -->
+    
+
+    <!-- <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/tabla.css"> -->
+   
+    <!-- <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+
+    <!--Librerias calendario-->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/locales/es.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.js"></script>
+    <!-- link de css -->
+    <link rel="stylesheet" href="css/header.css">
+  <!--Funciones-->
+  <script>
+
+   //Modificación, unica funcion que se deberia llamar 
+//    var eventos = [
+//             {
+//                 title: 'Long Evento',
+//                 start: '2023-09-07T00:00:00',
+//                 end: '2023-09-10T00:00:00',
+//                 backgroundColor: '#800080',
+//                 id: '1'
+//             }]
+
+var eventos = [];
+var calendar;
+    function dibuja_pagina(arrayDatos = []){
+        //alert(arrayDatos[0])
+        $.ajax({
+              //Informacion que le mandamos al PHP.
+                data:{ arrayDatos : arrayDatos},    
+                url:   'php/index.php', 
+                type:  'POST', 
+                success:  function (response) { //una vez que el archivo recibe el request lo procesa y lo devuelve.
+                    //alert(response)
+                    try {
+                    let respuesta = JSON.parse(response);
+                    
+                        //Pintar de forma normal y corriente
+                        if(respuesta[2] == 0){
+                            seccionBody = document.getElementById("cuerpo");
+                            seccionBody.innerHTML = respuesta[0];
+
+                            if(respuesta[3] != null && respuesta[3] != 0){
+                                eventos = [];
+                                for(let evento of respuesta[3]){
+                                    let e = {title: evento[0],
+                                            start: evento[1],
+                                            end: evento[2],
+                                            backgroundColor: evento[3],
+                                            id : evento[4]};    
+                                    eventos.push(e);
+                                    
+                                }
+                                
+                                dibuja_calendario();
+                            }
+                            //dibuja_calendario();
+                            //Mostrar mensaje por pantalla
+                            if(respuesta[1] != null && respuesta[1] != ""){
+                                document.getElementById("msgError").innerHTML = respuesta[1];
+                                $('#popupError').modal('show');
+                                //var popupError = document.getElementById('popupError');
+                                //popupError.modal('show');
+                            }
+                        //Redirigir a otra pagina
+                        }else{
+                            window.location.replace(respuesta[0]);
+                        }
+                    } catch (error) {
+                        seccionBody = document.getElementById("cuerpo");
+                        seccionBody.innerHTML = response;
+                    }
+                    
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                    alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+                } 
+        });
+        
+
+    };
+
+    //aplicar filtros portal del cliente (Modificar)
+    function aplicafiltros(f){
+        var filtro
+        var tipo
+        if(f == null){
+            filtro = $('#filtro_txt').val().toLowerCase();
+            tipo = 0;
+        }else{
+            filtro = f;
+            tipo = 2;
+        }
+        //alert(filtro)
+        dibuja_pagina([0,tipo,filtro]);
+    }
+
+    //aplicar los filtros del calendario
+    function aplicaFiltrosCalendario(){
+        
+        var selectedIds = [];
+            // Obtén los IDs de los checkboxes seleccionados
+            
+            var checkboxes = $('#filtros_dinamicos :input[type="checkbox"]').toArray();;
+            checkboxes.forEach(function (checkbox) {
+                if (checkbox.checked) {
+                    selectedIds.push(Number(checkbox.value));
+                }
+            });
+            // Filtra los eventos por los IDs seleccionados
+            var filteredEvents = eventos.filter(function (evento) {
+                return selectedIds.includes(evento.id);
+            });
+            // Actualiza el calendario con los eventos filtrados
+            calendar.removeAllEvents();
+            calendar.addEventSource(filteredEvents);
+    }
+    
+    //subir formularios estaticos
+    $(document).on("submit",".formulario",function(event){
+        event.preventDefault();
+        let valArray = [];
+        $(".formulario :input").each(function(){
+            valArray.push($(this).val());
+        })
+         //alert(valArray);
+        dibuja_pagina(valArray);
+    })
+    
+    //Subir los datos del formulario dinamico
+    $(document).on("submit",".formulario_Dinamico",function(event){
+        event.preventDefault();
+        let valArray = [];
+        $(".formulario_Dinamico :input").each(function(){
+                valArray.push($(this).val());
+        })
+        if(valArray.length != 0 ){
+            // Si se guarda el formulario (sin archivos)
+            dibuja_pagina([0,3,valArray]);
+        }else{
+            dibuja_pagina(0,3,0);
+        }
+        
+    })
+
+
+    //Funcion como la mierda (PROVISIONAL);
+    $(document).on("submit",".formulario_Dinamico_Archivos",function(event){
+        event.preventDefault();
+        var formulario = document.getElementsByClassName('formulario_Dinamico_Archivos');
+        var archivo = document.getElementById('Archivo').files[0];
+        var formData = new FormData();
+        
+        formData.append('Archivo', archivo);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'php/GestionSubidaArchivos.php', true);
+       
+        xhr.onload = function() {
+
+            if (xhr.status === 200) {
+                // Manejar la respuesta del servidor si es necesario
+                if(xhr.responseText != false){
+                    let valArray = [];
+                    valArray.push(xhr.responseText);
+                    $(".formulario_Dinamico_Archivos :input").each(function(){
+                        if($(this).attr("id") != "Archivo"){
+                            valArray.push($(this).val());
+                        } 
+                    })
+                    //alert(xhr.responseText);
+                    let arrayValAdicional = {'Archivo' : xhr.responseText};
+                    dibuja_pagina([0,3,valArray,arrayValAdicional]);
+                }else{
+                    alert("Error  0x80072f8f - 0x20000: Fallo al subir el archivo al servidor");
+                }
+            } else {
+                // Error en la solicitud
+                console.error('Error al subir el archivo.');
+            }
+        };
+
+        // Enviar el formulario con el archivo al servidor
+        xhr.send(formData);
+        
+
+    })
+
+    //Ajax para mostrar u ocultar la contraseña
+    $(document).on("click","#ImgPw",function(event){
+        var btnPw = document.querySelector("#togglePassword");
+        var txtPw = document.querySelector("#password");
+
+        //toogle
+        var tipoCampo = password.getAttribute("type") === "password" ? "text" : "password";
+        password.setAttribute("type", tipoCampo);
+        // toggle the eye icon
+        this.classList.toggle('fa-eye');
+        this.classList.toggle('fa-eye-slash');
+
+    })    
+
+    //Jquery para dibujar el calendario
+    function dibuja_calendario(){
+        var calendarEl = document.getElementById('calendar');
+
+        var today = new Date(); // Obtener la fecha actual
+        var formattedDate = today.toISOString().split('T')[0];
+
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            initialDate: formattedDate,
+            dayHeaderFormat: { weekday: 'long', month: 'numeric', day: 'numeric' },
+
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            buttonText: {
+                month: 'Mes',
+                today: 'Hoy',
+                week: 'Semana',
+                day: 'Día'
+            },
+            events: eventos, 
+            locale: 'es'
+        });
+        
+        
+        calendar.render();
+       
+    }
+
+
+    
+
+ /********* ------------------------------------------------------------- ************/
+    if (window.history.replaceState) { // verificamos disponibilidad
+        window.history.replaceState(null, null, window.location.href);
+    }
+
+    /***** Subir el archivo ******/
+    $(document).on("change","#Archivo",function(event){
+        var maxSize = 2 * 1024 * 1024; // 5 MB (en bytes)
+        if (this.files[0].size > maxSize) {
+            // cambiar por nuestro modal
+            alert('El archivo es demasiado grande. El tamaño máximo permitido es 2 MB.');
+            this.value = ''; 
+        }
+    });
+</script>
+</head>
+
+<body onload="dibuja_pagina()" style="min-height: 100%;">
+
+    <div class="modal fade" id="popupError" tabindex="-1" aria-labelledby="TituloError" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="TituloError">MSG</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="msgError">
+            </div>
+            <div class="modal-footer">
+              <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+              <button type="button" class="btn btn-primary">Aceptar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+<div id="cuerpo"></div>
+
+</body>
+
+</html>

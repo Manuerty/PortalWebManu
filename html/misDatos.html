@@ -1,0 +1,99 @@
+<div class="row h-100 justify-content-center my-4" id="no-margin">
+  
+  <div class="col-12 col-lg-9" id="no-padding">
+    <br>
+    <div class="card shadow-2-strong">
+      <div class="card-body">
+        <!-- Pestañas (Tabs) -->
+        <ul class="nav nav-tabs" id="myTabs">
+          <li class="nav-item">
+            <a class="nav-link active" id="tab1" data-bs-toggle="tab" href="#content1">Datos Personales</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="tab2" data-bs-toggle="tab" href="#content2">Datos Bancarios</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="tab2" data-bs-toggle="tab" href="#content3">Otros Datos</a>
+          </li>       
+        </ul>
+
+        <!-- Contenido de las Pestañas -->
+        <div class="tab-content">
+          <br>
+          <form id="formularioDatos"></form>
+          <div class="tab-pane fade show active" id="content1">
+            <!-- Contenido de la pestaña 1 -->
+              <div class="mb-3 col-12 col-md-10 offset-md-1 input-group-lg" >
+                <label for="NombreCompleto" class="form-label">Teléfono particular</label>
+                <input type="text" class="form-control border-secondary"  placeholder="%Telf%" >
+              </div>
+              <div class="mb-3 col-12 col-md-10 offset-md-1 input-group-lg" >
+                <label for="NombreCompleto" class="form-label">Dirección</label>
+                <input type="text" class="form-control border-secondary"  placeholder="%Dir%" >
+              </div>
+              <div class="mb-3 col-12 col-md-10 offset-md-1 input-group-lg" >
+                <label for="NombreCompleto" class="form-label">Población</label>
+                <input type="text" class="form-control border-secondary"  placeholder="%Pob%" >
+              </div>
+              <div class="mb-3 col-12 col-md-10 offset-md-1 input-group-lg" >
+                <label for="NombreCompleto" class="form-label">Código postal</label>
+                <input type="text" class="form-control border-secondary"  placeholder="%Cp%" >
+              </div>
+              <div class="mb-3 col-12 col-md-10 offset-md-1 input-group-lg" >
+                <label for="NombreCompleto" class="form-label">Turno</label>
+                <!-- <input type="text" class="form-control border-secondary" id="FechaInicio" aria-describedby="Fecha Inicio" value="%Turno%" readonly> -->
+                <p>&nbsp &nbsp %Turno%</p>
+              </div>
+              <div class="mb-3 col-12 col-md-10 offset-md-1 input-group-lg" >
+                <label for="NombreCompleto" class="form-label">Departamento</label>
+                <!-- <input type="text" class="form-control border-secondary" id="FechaInicio" aria-describedby="Fecha Inicio" value="%Dep%" readonly> -->
+                <p>&nbsp &nbsp %Dep%</p>
+              </div>
+              <div class="mb-3 col-12 col-md-10 offset-md-1 input-group-lg" >
+                <label for="NombreCompleto" class="form-label">Cargo</label>
+                <!-- <input type="text" class="form-control border-secondary" id="FechaInicio" aria-describedby="Fecha Inicio" value="%Cargo%" readonly> -->
+                <p>&nbsp &nbsp %Cargo%</p>
+              </div>
+              <div class="mb-3 col-12 col-md-10 offset-md-1 input-group-lg" >
+                <label for="NombreCompleto" class="form-label">Competencias</label>
+                <!-- <input type="text" class="form-control border-secondary" id="FechaInicio" aria-describedby="Fecha Inicio" value="%Cargo%" readonly> -->
+                <p>&nbsp &nbsp %Cargo%</p>
+              </div>
+          </div>
+          <div class="tab-pane fade" id="content2">
+             <!-- Contenido de la pestaña 2 -->
+            <div class="mb-3 col-12 col-md-10 offset-md-1 input-group-lg" >
+              <label for="NombreCompleto" class="form-label">Nombre Propietario</label>
+              <input type="text" class="form-control border-secondary"  placeholder="%NomP%">
+            </div>
+            <div class="mb-3 col-12 col-md-10 offset-md-1 input-group-lg" >
+              <label for="NombreCompleto" class="form-label">Bic</label>
+              <input type="text" class="form-control border-secondary"  placeholder="%Bic%">
+            </div>
+            <div class="mb-3 col-12 col-md-10 offset-md-1 input-group-lg" >
+              <label for="NombreCompleto" class="form-label">Iban</label>
+              <input type="text" class="form-control border-secondary" placeholder="%Iban%">
+            </div>
+          </div>
+          <div class="tab-pane fade" id="content3">
+            <!-- Contenido de la pestaña 3 -->
+            <div class="mb-3 col-12 col-md-10 offset-md-1 input-group-lg" >
+              <label for="NombreCompleto" class="form-label">Talla Zapatos</label>
+              <input type="text" class="form-control border-secondary"  placeholder="%TZ%" >
+            </div>
+            <div class="mb-3 col-12 col-md-10 offset-md-1 input-group-lg" >
+              <label for="NombreCompleto" class="form-label">Talla Pantalon</label>
+              <input type="text" class="form-control border-secondary" placeholder="%TP%" >
+            </div>
+            <div class="mb-3 col-12 col-md-10 offset-md-1 input-group-lg" >
+              <label for="NombreCompleto" class="form-label">Talla Camisa</label>
+              <input type="text" class="form-control border-secondary" placeholder="%TC%" >
+            </div>
+          </div>
+        </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button onclick="SubmitFormularioCambioDatos()" class="btn_acciones"><img src="Img/Portal_Empleado_Nuevo2.png"></button>

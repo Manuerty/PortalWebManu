@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ES">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Portal Cliente</title>
+  <!-- font awesome  -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous" />
+    <!--Librerias de bootstrap-->
+        <!--css-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+        <!--jquery-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" 
+        crossorigin="anonymous"></script>
+    <!--jquery-->
+    <script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E="
+        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>      
+    <!-- Iconos de boostrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css">
+    <!-- <link href='https://unpkg.com/css.gg@2.0.0/icons/css/arrow-left.css' rel='stylesheet'> -->
+    
+
+    <!-- <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/tabla.css"> -->
+   
+    <!-- <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script> -->
+
+    <!-- link de css -->
+    <link rel="stylesheet" href="../css/header.css">
+    
+  <!--Funciones-->
+  <script>
+
+
+    function dibuja_pagina(arrayDatos = []){
+        $.ajax({
+                    data:{ arrayDatos : arrayDatos}, 
+                    url: '../php/reestablecerContrasena.php',
+                    type: 'POST',
+                    success: function(response) {
+                        if(response == 1){
+                          alert("");
+                        }else{
+                          alert(response)
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log("Error: " + error);
+                    }
+                });
+        
+
+    };
+
+    $(document).on("submit",".formulario",function(event){
+        event.preventDefault();
+        let valArray = [];
+        $(".formulario :input").each(function(){
+            valArray.push($(this).val());
+        })
+        //alert(valArray);
+        dibuja_pagina(valArray);
+    })
+
+     //Jquery para mostrar u ocultar la contraseña
+     $(document).on("click","#ImgPw",function(event){
+        var btnPw = document.querySelector("#togglePassword");
+        var txtPw = document.querySelector("#pw_text");
+        //toogle
+        var tipoCampo = txtPw.getAttribute("type") === "password" ? "text" : "password";
+        txtPw.setAttribute("type", tipoCampo);
+        // toggle the eye icon
+        this.classList.toggle('fa-eye');
+        this.classList.toggle('fa-eye-slash');
+
+    })    
+    
+    //Jquery para mostrar el modelo de factura
+    $(document).on("click","#ImgInterrogacion",function(event){
+
+      var imageUrl = '../Img/PortalEmpleado/Documentos/cabecera_factura.png';
+    
+    // Abre una nueva ventana o pestaña para mostrar la imagen
+    window.open(imageUrl, '_blank');
+
+    })
+
+    
+
+ /********* ------------------------------------------------------------- ************/
+    if (window.history.replaceState) { // verificamos disponibilidad
+        window.history.replaceState(null, null, window.location.href);
+    }
+</script>
+</head>
+
+<body style="min-height: 100%;">
+
+    <div class="modal fade" id="popupError" tabindex="-1" aria-labelledby="TituloError" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="TituloError">MSG</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="msgError">
+            </div>
+            <div class="modal-footer">
+              <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+              <button type="button" class="btn btn-primary">Aceptar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+<div id="cuerpo" class="container-fluid px-0">
+    <br>
+    <div class="container text-center">
+      <div class="row">
+        <div class="col">
+          <!-- <b class="display-5" style="color: #0065bd;">Portal del cliente</b><br> -->
+          <!-- <span style="color: #0065bd; font-size: 50px;">%NombrePortal%</span> -->
+        </div>
+      </div>
+    </div>
+    <br>
+    
+    <section class="h-50" id="s1" style="margin-top: 0.9em;">
+      <div class="container">
+        <div class="row d-flex justify-content-center align-items-center">
+          <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+            <div id="carta_login" class="card shadow-lg bg-body">
+              <div class="card-body p-5 text-center shadow">
+                <!-- <h3 class="mb-3"><img id="logo_Empresa_login" width="50%"
+                    src="%logoImg%">
+                </h3> -->
+                
+                <div><h4>Reestablecer contraseña</h4></div>
+                <div><p>Introduzca los datos requeridos para recibir un email con el que podra reestablecer la contraseña.</p></div>
+      
+                <form id="form_login" class="formulario">
+                  <div class="input-group mb-3 input-group-lg rounded-pill">
+                    <label for="cif" class="form-label"></label>
+                    <input type="email" class="form-control rounded-pill" placeholder="Email" id="email" required>
+                  </div>
+                  <!-- <div class="input-group mb-3 input-group-lg rounded-pill">
+                    <label for="cif" class="form-label"></label>
+                    <input type="text" class="form-control rounded-pill" placeholder="CIF" id="user" required>
+                  </div> -->
+
+                  <button type="submit" class="col-6 btn btn-primary rounded-pill" id="btnForm">Enviar</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <br>
+    <br>
+    <br>
+</div>
+
+</body>
+
+</html>

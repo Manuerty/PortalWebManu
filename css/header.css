@@ -1,0 +1,227 @@
+/*\\datos\APLIS\ARCHIVOS ONIX\Esquio20\
+/* Flecha del header */
+.flecha_volver{
+    all: unset;
+    cursor: pointer;
+   
+}
+ 
+.flecha_volver:focus {
+    outline: revert;
+}
+
+#flecha_header:hover {
+    transform: scale(1.4);
+    
+}
+
+/*Boton inicio fin jornada pestaña*/
+#InicioFin_Jornada{
+  all: unset;
+  cursor: pointer;
+  border: none;
+}
+
+#InicioFin_Jornada:hover {
+  transform: scale(1.4);
+  
+}
+
+/* Estilos iconos */
+.pdf_icono{
+    width: 1.1%;
+    float: right;
+    min-width: 2.5em;
+    margin-left: 0.35em;
+}
+
+.bolsa_dinero{
+    width: 1.1%;
+    float: right;
+    min-width: 1.5em;
+    margin-right: 0.6em;
+}
+.bolsa_dinero:hover{
+   transform:scale(1.07);
+}
+
+
+.pdf_icono:hover{
+    transform:scale(1.07);
+}
+
+
+@media (max-width: 600px) {
+    .card {
+        /* Quitalos estilos de sombra y borde en dispositivos móviles */
+        box-shadow: none;
+        border: none;
+    }
+}
+
+/*css para que el boton quede por encima del footer*/
+.btn_acciones {
+  all: initial;
+  position: fixed;
+  right: 13%;
+  bottom: 10px;
+  cursor: pointer;
+  z-index: 999; 
+}
+
+ .btn-check-vacaciones-tipos {
+  background-color: #f0f0f0; 
+  color: #696969;
+  border-color: #a8a8a8; 
+  transition: all 0.3s ease; 
+}
+
+.btn-check:checked + .btn-check-vacaciones-tipos {
+  background-color: #0d6efd; 
+  color: #fff;
+  border-color: #fff; 
+} 
+
+/* css para eliminar los margenes en movil de boostrap */
+
+#no-margin {
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+    
+}
+#no-padding{
+    padding: 0px !important;
+}
+
+.c_img{
+    border-top-left-radius:var(--bs-border-radius-pill) !important;
+    border-bottom-left-radius:var(--bs-border-radius-pill) !important;
+    border-right: 0px !important;
+}
+#ImgPwContainer{
+    border-top-right-radius:var(--bs-border-radius-pill) !important;
+    border-bottom-right-radius:var(--bs-border-radius-pill) !important;
+    background-color:white;
+    border-left: 0px !important;
+}
+
+#wrapperFirma{
+    border: 1px solid black;
+    width: 100%;
+    height: 200px;
+    display: block;
+    margin: 0 auto;
+}
+
+.PestanaMenu {
+    color:#757575;
+    font-weight: 500;
+}
+
+#cookie-modal {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+    background-color: #f8f8f8;
+    border-top: 1px solid #ccc;
+    text-align: center;
+    z-index: 150;
+  }
+  #header_agrupado img{
+    transition: height 0.5s ease; 
+  }
+
+  /* Safari */
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+ 
+  /*Estilos Full calendar*/
+  .fc-daygrid-day-frame{
+    max-height: 50px; /* Establece el máximo de altura para cada semana */
+    margin-bottom: 0; /* Elimina el margen inferior entre las semanas */
+}
+
+#TxtBoxBuscarHeader {
+  position: relative;
+}
+
+#TxtBoxBuscarHeader input {
+  padding-right: 40px; /* Espacio para el botón de la lupa */
+}
+
+#LupaHeader2 {
+  position: absolute;
+  right: 10px;
+  top: 45%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+#LupaHeader3 {
+
+  top: 45%;
+  transform: translateY(-50%);
+
+}
+
+
+/* Panel deslizable desde la derecha */
+.panel-deslizable {
+  position: fixed;
+  top: 0;
+  right: 0; /* Cambiado de left a right */
+  height: 100%;
+  background-color: white;
+  z-index: 1000;
+  transform: translateX(100%); /* Oculto inicialmente fuera de la vista hacia la derecha */
+  transition: transform 0.3s ease; /* Efecto de deslizamiento */
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+  overflow-y: auto;
+}
+
+/* Ancho del panel según el dispositivo */
+@media (max-width: 767px) { /* Para móviles */
+  .panel-deslizable {
+      width: 70%;
+  }
+}
+
+@media (min-width: 768px) { /* Para ordenadores */
+  .panel-deslizable {
+      width: 20%;
+  }
+}
+
+.panel-contenido {
+  padding: 20px;
+}
+
+.aparienciaBoton {
+  cursor: pointer; /* Cambia el cursor a una mano al pasar por encima */
+}
+
+.rotar_imagen_90 {
+  transform: rotate(90deg);
+}
+.seccion-panelDeslizable{
+  margin-left: 20px;
+}
+
+.form-switch {
+  display: flex !important;
+  flex-direction: row-reverse !important;
+  align-content:start;
+}

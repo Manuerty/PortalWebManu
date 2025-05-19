@@ -1,0 +1,59 @@
+<!-- As a heading -->
+<br>
+<div class="container text-center">
+  <div class="row">
+    <div class="col">
+      <!-- <b class="display-5" style="color: #0065bd;">Portal del cliente</b><br> -->
+      <span style="color: #0065bd; font-size: 50px;">%NombrePortal%</span>
+    </div>
+  </div>
+</div>
+<br>
+
+<section class="h-50" id="s1" style="margin-top: 0.9em;">
+  <div class="container">
+    <div class="row d-flex justify-content-center align-items-center">
+      <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+        <div id="carta_login" class="card shadow-lg bg-body">
+          <div class="card-body p-5 text-center shadow">
+            <h3 class="mb-3"><img id="logo_Empresa_login" width="50%"
+                src="%logoImg%">
+            </h3>
+            <br>
+            <div><h4>Soy %TipoUsuario%</h4boostrap></div>
+            <br>
+            <form id="form_login" class="formulario">
+              <div class="input-group mb-3 input-group-lg rounded-pill">
+                <label for="user" class="form-label"></label>
+                <input type="text" class="form-control rounded-pill" placeholder="Usuario" id="user" required>
+              </div>
+              
+              <div class="input-group mb-3 input-group-lg "  >
+                <!-- <span class="input-group-text"><i class="fa fa-lock"></i></span> -->
+                <input class="form-control c_img" id="pw_text" type="password" placeholder="Contraseña" value="" required>
+                <span class="input-group-text" id="ImgPwContainer">
+                  <i class="fa fa-eye" id="ImgPw" 
+                 style="cursor: pointer"></i>
+                 </span>
+              </div>
+              
+              <!-- <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                <label class="form-check-label" for="exampleCheck1" style="float:left">Recordar contraseña</label>
+              </div> -->
+              <button type="submit" class="col-6 btn btn-primary rounded-pill" id="btnForm">ENTRAR</button>
+            </form>
+            <br>
+            <div class="row col-12"><!--alta_Usuario-->
+              <a class="col-12" href="html/%Linkcrear%.html" target="_blank" rel="noopener noreferrer" style="text-align: left;text-decoration: none;">Crear usuario</a>
+              <a class="col-12" href="html/recuperarContrasena.html" target="_blank" rel="noopener noreferrer" style="text-align: left;text-decoration: none;">¿Olvido su contraseña?</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<br>
+<br>
+<br>

@@ -1,0 +1,34 @@
+<br>
+<br>
+
+<!-- Panel de control --> 
+<div class="row h-100 justify-content-center" id="no-margin">
+  <div class="col-12 col-lg-9" id="no-padding">
+    <div class="card shadow-2-strong shadow pb-3 pb-md-5 col-12">
+      <div class="row col-12">
+        <div class="col-12 text-center  mt-2 mt-md-5"><h1><b>%NombreEmpleado%</b></h1></div>
+      </div>
+      <div class="row col-12">
+        <div class="col-12 text-center mt-1 mt-md-3"><h3><b style="color: %color%;"></b></h3></div>
+      </div>
+      <div class="row col-12">
+        <div class="col-12 text-center mt-1 mt-md-3"><b id="fechaActualAutomatica">%FechaAccionjornada%</b></div>
+      </div>
+      <div class="col-12 col-lg-8 offset-lg-2" id="map" style="height: 350px;"></div>
+      <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" crossorigin=""></script>
+      <div class="col-11 d-flex flex-row-reverse">
+        <button id="InicioFin_Jornada" onclick="guardarJornada()" class="align-self-end" ><img src="Img/FlechaJornada.png" alt="BotonIniciarFinalizarJornada"></button>
+        
+        <!-- <div class="col-2 offset-1 btn btn-success mt-3" onclick="dibuja_pagina([0,0])" style="display: %BotonIniciarJornada%;"><h3><b>Iniciar Jornada</b></h3></div>
+        <div class="col-2 offset-1 btn btn-danger mt-3" onclick="dibuja_pagina([0,0])" style="display: %BotonFinalizarJornada%;"><h3><b>Finalizar Jornada</b></h3></div> -->
+        <!-- <div class="col-2 offset-1 btn btn-secondary mt-3" onclick="dibuja_pagina([0,0])" style="display: %BotonPausarJornada%;"><h3><b>Pausar Jornada</b></h3></div> -->
+        <!-- <div class="col-1 offset-1 btn btn-secondary mt-3" onclick="dibuja_pagina([0,0])" style="display: %BotonretomarJornada%;"><b>Reanudar</b></div> -->
+
+      </div>
+     
+    </div>
+
+    
+
+  </div>
+</div>

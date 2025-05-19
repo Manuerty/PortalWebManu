@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="ES">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Área del Cliente</title>
+    <!-- font awesome  -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous" />
+    <!--Librerias de bootstrap-->
+    <!--css-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <!--jquery-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" 
+        crossorigin="anonymous"></script>
+    <!--jquery-->
+    <script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E="
+        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>      
+    <!-- Iconos de boostrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css">
+    
+
+    <!-- <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/tabla.css"> -->
+    <!-- Libreria necesaria para la firma -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.3.5/signature_pad.min.js" integrity="sha512-kw/nRM/BMR2XGArXnOoxKOO5VBHLdITAW00aG8qK4zBzcLVZ4nzg7/oYCaoiwc8U9zrnsO9UHqpyljJ8+iqYiQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <!-- Libreria de Openmaps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"    crossorigin=""></script>
+
+    <!-- librerias para los estilos -->
+    <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.label/dist/leaflet.label.js"></script> -->
+
+
+    <!-- <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+
+    <!--Librerias calendario-->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/locales/es.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.js"></script>
+    <!--Librerias click calendario-->
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css" />
+    <script src="https://unpkg.com/tippy.js@6"></script>
+
+    <!-- librerias de los graficos/chars -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+    <!-- link de css -->
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/selectBuscar.css">
+  <!--Funciones-->
+<script>
+//Imports
+//import { obtenerHoraLocal } from 'js/Datetime.js';
+
+var eventos = [];
+var signaturePad;
+var cookiesAceptadas;
+var calendar;
+var map2;
+var datosAuxiliares = [];
+var cadenaAuxiliar = "";
+var dibujaPaginaBloqueado = false;
+//arrayDatos(ElContenidoHtml[0],ElMensajedeError[1],Accion[2],ArrayAuxiliar[3],$accionJs)
+async function dibuja_pagina(arrayDatos = []) {
+    if (dibujaPaginaBloqueado) {
+        return;
+    }
+    dibujaPaginaBloqueado = true; 
+    // mostrar u ocultar coookies   
+    if (cookiesAceptadas == null) { 
+        if (verificarCookiesAceptadas()) {
+            cookiesAceptadas = true;
+        } else {
+            document.getElementById('cookie-modal').style.display = 'block';
+        }
+    } 
+    recargarCSSCadaHora('css/header.css', 1); 
+    try {
+        await new Promise((resolve, reject) => {
+            $.ajax({
+                data: { arrayDatos: arrayDatos },
+                url: 'php/index.php',
+                type: 'POST',
+                success: function(response) {
+                    try {
+                        let respuesta = JSON.parse(response);
+                        /***************************************/
+                        // Si el elemento 2 es 0 pinta la pestaña y luego realiza las acciones correspondientes
+                        /***************************************/
+                        if (respuesta[2] == 0) {
+                            let seccionBody = document.getElementById("cuerpo");
+                            if(respuesta[0] != 0 && respuesta[0] != null ){
+                                seccionBody.innerHTML = respuesta[0];
+                            }
+                            /***************************************/
+                            // Usar Accion s que viene de php para elegir la accion que realizar
+                            /***************************************/
+                            if(respuesta[3] != null){
+                                switch (respuesta[4]) {
+                                    case 3:
+                                        cargarModalFormularioDinamico("modalFormularioDinamicoAdjuntar");
+                                        break;
+                                    case 2:
+                                        generarGrafico_Barras(respuesta[3][0]);
+                                        break;
+                                    case 1:
+                                        for (let evento of respuesta[3]) {
+                                            let e = {
+                                                title: evento[0],
+                                                start: evento[1],
+                                                end: evento[2],
+                                                backgroundColor: evento[3],
+                                                id: evento[4]
+                                            };
+                                            eventos.push(e);
+                                        }
+                                        dibuja_calendario(respuesta[3]);
+                                        break;
+                                }
+                            }
+                            
+                            CargarMapaFichaje();
+                            /***************************************/
+                            // Mostrar mensaje por pantalla
+                            /***************************************/
+                            if (respuesta[1] != null && respuesta[1] != "" && respuesta[1] != 0) {
+                                document.getElementById("msgError").innerHTML = respuesta[1];
+                                $('#popupError').modal('show');
+                            }
+                        }else if(respuesta[2] == 3){
+
+                        } else {
+                            if (respuesta[1] == 0) {
+                                if (respuesta[3] != null && respuesta[3] != '') {
+                                    alert(respuesta[3]);
+                                }
+
+                                window.location.replace(respuesta[0]);
+                            } else if (respuesta[1] == 1) {
+                                window.open(respuesta[0], '_blank');
+                            }
+                        }
+                        resolve(); 
+                    } catch (error) {
+                        let seccionBody = document.getElementById("cuerpo");
+                        seccionBody.innerHTML = response;
+                        reject(error); // Rechazar la promesa en caso de error en el procesamiento de la respuesta
+                    }
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    //alert("Status: " + textStatus);
+                    //alert("Error: " + errorThrown);
+                    reject(new Error("Fallo la conexion con el servidor")); // Rechazar la promesa en caso de error AJAX
+                }
+            });
+        });
+
+    } catch (error) {
+        console.error('Error en la función dibuja_pagina:', error);
+    } finally {
+        dibujaPaginaBloqueado = false;
+    }
+}
+
+    //aplicar filtros portal del cliente (Modificar)
+    function aplicafiltros(f){
+        var filtro
+        var tipo
+        if(f == null){
+            filtro = $('#filtro_txt').val().toLowerCase();
+            tipo = 0;
+        }else{
+            filtro = f;
+            tipo = 2;
+        }
+        //alert(filtro)
+        dibuja_pagina([0,tipo,filtro]);
+    }
+
+    // aplicar filtros actualizado
+    function aplicaFiltradoHeader(ValorBusqueda = null){
+        var textoBuscado = '';
+        if(ValorBusqueda == null){
+            textoBuscado = $("#TxtBoxInputBuscarHeader").val();
+        }
+        var selectedIds = [];
+              // Obtén los IDs de los checkboxes seleccionados
+            var checkboxes = $('#panelDeslizable :input[type="checkbox"]').toArray();
+            checkboxes.forEach(function (checkbox) {
+                if (checkbox.checked) {
+                    selectedIds.push(Number(checkbox.value));
+                }
+            });
+            
+        
+        if(selectedIds != []){
+            
+            dibuja_pagina([0,4,textoBuscado,selectedIds]);
+        }else{
+            dibuja_pagina([0,4,textoBuscado,[]]);
+        };
+    }
+
+    function desplegarPanelFiltros() {
+    const panel = document.getElementById("panelDeslizable");
+    const currentTransform = window.getComputedStyle(panel).transform;
+    
+    if (currentTransform === "none" || currentTransform === "matrix(1, 0, 0, 1, 0, 0)") {
+        // Si el transform es "none" o "matrix(1, 0, 0, 1, 0, 0)", el panel está en su posición inicial (visible)
+        panel.style.transform = "translateX(100%)"; // Ocultar el panel moviéndolo hacia la derecha
+    } else {
+        // Si el transform es diferente, el panel está oculto (fuera de la vista)
+        panel.style.transform = "translateX(0)"; // Mostrar el panel moviéndolo hacia la izquierda
+    }
+}
+    //aplicar los filtros del calendario
+    function aplicaFiltrosCalendario(){
+        
+        var selectedIds = [];
+              // Obtén los IDs de los checkboxes seleccionados
+            var checkboxes = $('#panelDeslizable :input[type="checkbox"]').toArray();
+            checkboxes.forEach(function (checkbox) {
+                if (checkbox.checked) {
+                    selectedIds.push(Number(checkbox.value));
+                }
+            });
+            
+            // Filtra los eventos por los IDs seleccionados
+            
+            var filteredEvents = eventos.filter(function (evento) {
+                return selectedIds.includes(evento.id);
+            });
+            // // Actualiza el calendario con los eventos filtrados
+            calendar.removeAllEvents();
+            calendar.addEventSource(filteredEvents);
+            desplegarPanelFiltros()
+    }
+
+   //cambiar para que filtre el php
+   function filtrarTablaCalendario(anioS){ 
+            $('#dropdownMenuButton').text('Año '+ anioS);
+            $('#dropdownMenuButton').data('nombre') == anioS;
+            let contadorVacaciones=0;
+            $('#myTable tr').filter(function() {
+               if($(this).data('nombre') !== "Año : "+anioS){
+                    $(this).addClass('d-none');
+                    contadorVacaciones = 1;
+               }else{
+                    $(this).removeClass('d-none');
+               }
+            })
+        }
+    
+    function generarGrafico_Barras(AniosVacaciones) {
+    
+            let datosParaAnio = AniosVacaciones;
+            // if(AnioSelecionado == null){
+            //     datosParaAnio = AniosVacaciones.find((anio) => anio['Año'] == anioActual);
+            //     anioS = anioActual;
+            // //     alert(datosParaAnio);
+            // //      //AnioSelecionado = datosParaAnio[0];
+            // }else{
+            //     datosParaAnio = AniosVacaciones.find((anio) => anio['Año'] == AnioSelecionado);
+            //     anioS = AnioSelecionado;
+            // }
+            var ctx = document.getElementById('nav-graficos').getContext('2d');
+            var dias;
+            if(datosParaAnio){
+                //alert(AniosVacaciones);
+                dias = [datosParaAnio['DiasTotales'] == null ? 1 : datosParaAnio['DiasTotales']
+                        , datosParaAnio['DiasDisfrutados'] == null ? 1 : datosParaAnio['DiasDisfrutados']
+                        , datosParaAnio['DiasConcedidos'] == null ? 1 : datosParaAnio['DiasConcedidos']
+                        , datosParaAnio['DiasPendientes'] == null ? 1 : datosParaAnio['DiasPendientes']
+                        ];
+            }else{
+
+                dias = [1,1,1,1];
+            }
+            console.log(dias);
+            
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Totales: '+ datosParaAnio['DiasTotales'],
+                            'Disfrutados: '+ datosParaAnio['DiasDisfrutados'],
+                            'Concedidos: '+ datosParaAnio['DiasConcedidos'],
+                            'Pendientes: '+ datosParaAnio['DiasPendientes']],
+                    datasets: [{
+                        label:  '' ,
+                        data: dias,
+                        backgroundColor: [
+                            'rgba(139, 69, 19, 0.2)', // Color para días totales marron
+                            'rgba(54, 162, 235, 0.2)', // Color para días disfrutados azul
+                            'rgba(75, 192, 192, 0.2)',// Color para días concedidos verde
+                            'rgba(54, 162, 235, 0.2)' // Color para días pendientes amarillo
+                        ],
+                        borderColor: [
+                            'rgba(139, 69, 19, 0.2)', // Color para días totales marron
+                            'rgba(54, 162, 235, 0.2)', // Color para días disfrutados azul
+                            'rgba(75, 192, 192, 0.2)',// Color para días concedidos verde
+                            'rgba(54, 162, 235, 0.2)' // Color para días pendientes amarillo
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            min: 0,
+                            ticks: {
+                            stepSize: 5 
+                        } 
+                        }
+                    },
+                    animation: {
+                        duration: 1
+                    }
+                }
+            });
+        
+            // Actualizar el gráfico después de cambiar el tamaño del canvas
+            
+            //<filtrarTablaCalendario(anioS);
+            
+        }
+        
+    function aceptarCookies() {
+    // Establecer una cookie llamada "cookiesAceptadas" con un valor de "true"
+        document.cookie = "cookiesPortalEsquioAceptadas=true; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/";
+        document.getElementById('cookie-modal').style.display = 'none';
+        
+
+    }
+    function verificarCookiesAceptadas() {
+    var cookies = document.cookie.split(';');
+    for (var i = 0; i < cookies.length; i++) {
+      var cookie = cookies[i].trim();
+      if (cookie.startsWith("cookiesPortalEsquioAceptadas=")) {
+        return true;
+      }
+    }
+    return false; 
+  }
+
+    function abrirTxtBoxBuscar(){
+        $("#TxtHeaderPrincipal").toggleClass("d-none");
+        $("#TxtBoxBuscarHeader").toggleClass("d-none");
+        $("#LupaHeader").toggleClass("d-none");
+        $("#CruzHeader").toggleClass("d-none");   
+    }
+
+    function cargarModalDetalles(labels,valores){
+        let campos = labels;
+        let len = campos.length;
+        let htmlModal=''
+        for(let i = 0; i < len; i++){
+            
+            htmlModal += '<div class="mb-3"> <label for="message-text" class="col-form-label" style="font-size:13px;">'+campos[i]+':</label><p class="form-control" >'+valores[i]+'</p></div>';
+        }
+        let cuerpo = document.getElementById("msgError");
+        cuerpo.innerHTML = htmlModal;
+
+        let titulomsg = document.getElementById("TituloError");
+        titulomsg.innerHTML = 'Detalles';
+
+        $('#popupError').modal('show');
+        
+    }
+
+
+    //calcula diferencia en fechas 
+    //es
+    function calcularDiferenciaHoras() {
+    var fechaInicio = $(".formulario_modal #FechaInicio").val();
+    var fechaFin = $("#FechaFin").val(); // Este puede estar fuera o dentro de la clase
+    var diferenciaHorasField = document.getElementById("DiferenciaHoras");
+    var diferenciaHorascampolabel = document.getElementById("DiferenciaHorasCampo");
+    var errorMsgFin = document.getElementById("FechaFin_msgError");
+
+    if (fechaInicio && fechaFin) {
+        var inicio = new Date(fechaInicio);
+        var fin = new Date(fechaFin);
+
+        if (fin > inicio) {
+            var diferenciaMs = fin - inicio; // Diferencia en milisegundos
+            var diferenciaTotalMin = Math.floor(diferenciaMs / (1000 * 60)); // Diferencia total en minutos
+            var horas = Math.floor(diferenciaTotalMin / 60);
+            var minutos = diferenciaTotalMin % 60;
+
+            var minutosFormateados = minutos.toString().padStart(2, '0');
+            errorMsgFin.classList.add("d-none");
+            diferenciaHorascampolabel.classList.remove("d-none");
+            diferenciaHorasField.value = horas + ":" + minutosFormateados ;
+        }else{
+            diferenciaHorasField.value = "";
+            diferenciaHorascampolabel.classList.add("d-none");
+            errorMsgFin.classList.remove("d-none");
+        }
+        }
+    }
+    //esto peta arreglar mañana
+    $(document).on("change",".formulario_modal #FechaFin",calcularDiferenciaHoras);
+
+    $(document).on("submit", ".formulario_sociedades", function (event) {
+        event.preventDefault();
+        let valArray = [];
+
+        // Encuentra el radio button seleccionado
+        let selectedRadio = $(".formulario_sociedades input[name='radio_sociedad']:checked");
+
+        if (selectedRadio.length > 0) {
+            valArray.push(selectedRadio.val());
+        }
+
+        dibuja_pagina(valArray);
+    });
+
+    //subir formularios estaticos
+    $(document).on("submit",".formulario",function(event){
+        event.preventDefault();
+        let valArray = [];
+        $(".formulario :input").each(function(){
+            valArray.push($(this).val());
+        })
+         //alert(valArray);
+        dibuja_pagina(valArray);
+    })
+    
+    function SubmitModalForm(tipoApp = 0,IdRegisto = null,claseFormulario = null,nombreForm = null ){
+        
+        event.preventDefault();
+        let campoRequeridoVacio = 0;
+        let erroresEnv = 0;
+
+        if ($(".formulario_modal :file").length > 0 && $(".formulario_modal :file")[0].files.length > 0 && IdRegisto == null) {
+            var formulario = document.getElementsByClassName('formulario_modal');
+            var inputArchivo = $(".formulario_modal :file")[0];
+            var tamanioMaximo = 4 * 1024 * 1024;
+            var archivo  = inputArchivo.files[0];
+            var nombreArchivo = archivo.name;
+            var formData = new FormData();
+            
+            if (archivo.size >= tamanioMaximo){
+                alert("El tamaño maximo del archivo no puede superar los 4 Mb");
+            }{
+                formData.append('Archivo', archivo);
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'php/GestionSubidaArchivos.php', true);
+                xhr.onload = function() {
+
+                if (xhr.status === 200) {
+                    
+                    // Manejar la respuesta del servidor si es necesario
+                    if(xhr.responseText == 0){
+                        alert("Error  0x80072f8f - 0x20000: Fallo al subir el archivo al servidor");
+                    }else if(xhr.responseText == 1){
+                        alert("El tamaño maximo del archivo no puede superar los 4 Mb");
+                    }else{
+                        var IdAT = $("#TipoArchivo").val()
+                        let arrayValAdicional = []
+                        let RutaArchivo = '';
+                        if(tipoApp == 0){
+                            arrayValAdicional = {'Archivo' : xhr.responseText,
+                                                    'Nombre' : nombreArchivo,
+                                                'IdAT' : IdAT};
+                        }else{
+                            $(".formulario_modal :input").each(function(){
+                                if($(this).prop("type") !== "file"){
+                                    arrayValAdicional.push($(this).val());
+                                }
+                            })
+                            RutaArchivo = xhr.responseText;
+                        }
+                        
+                        $('#SubmitModalForm').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $('body').css({
+                            'overflow': 'auto',
+                            'padding-right': '0'
+                        });
+                        if (claseFormulario){
+                            //alert(arrayValAdicional);
+                            dibuja_pagina([0,3.5,arrayValAdicional,RutaArchivo,nombreArchivo]);
+                        }else{
+                            dibuja_pagina([0,3,arrayValAdicional,RutaArchivo,nombreArchivo]);
+                        }
+                        
+                    }
+                } else {
+                    // Error en la solicitud
+                    console.error('Error al subir el archivo.');
+                }
+                };
+                // Enviar el formulario con el archivo al servidor
+                xhr.send(formData);
+            }
+            
+            
+        }else{
+            
+            let nombreForm = 'SubmitModalForm';
+            if(claseFormulario != null){
+                nombreForm = nombreForm;
+            }
+
+           
+            let valArray = [];
+            if(IdRegisto != null){
+                valArray.push(claseFormulario,IdRegisto);
+            }
+           
+            $(" .formulario_modal:visible :input").each(function(){
+                
+                let fechaActual = new Date();
+                let anoActual = fechaActual.getFullYear();
+                let classComprobacion = '#'+ $(this).prop('id') +'_condiciones'; 
+                let comprobacion = $(classComprobacion).text();
+                if(!comprobacion){
+                    comprobacion = 'true';
+                }
+               
+                if($(this).prop('required') && ($(this).val() == null || $(this).val() =='' || !eval(comprobacion)) && $(this).closest('form').is(':visible')  ){
+                    $(this).closest('form').attr('id');
+                    $(this).addClass("border-danger");
+                    let classInput =  '#'+ $(this).prop('id') +'_msgError'; 
+                    $(classInput).removeClass('d-none');
+                    campoRequeridoVacio = 1;
+                }else{
+                    $(this).removeClass("border-danger");
+                    let classInput =  '#'+ $(this).prop('id') +'_msgError'; 
+                    $(classInput).addClass('d-none');
+                }
+               
+                if ($(this).hasClass('selectBuscar-input')){
+                    valArray.push($(this).attr('data-value'));
+                    
+                }else{
+                    valArray.push($(this).val());
+                }
+            })
+
+            $('body').css({
+                'overflow': 'auto',
+                'padding-right': '0'
+            });
+
+            $('#'+nombreForm).modal('hide');
+            $('.modal-backdrop').hide();
+            
+            if(campoRequeridoVacio == 1){
+                alert("Complete todos los campos");    
+            }else{
+                //alert(valArray);
+               dibuja_pagina([0,3,valArray]);
+            }
+            
+        }
+        
+        
+    }
+
+    function SubmitFormularioCambioDatos(){
+        var valArray = [];
+        $(".tab-pane :input").each(function(){
+            let valor = $(this).val()!='' ? $(this).val()  : null
+                valArray.push($(this).val());
+        })
+            
+            alert("Solicitud registrada correctamente.")
+            dibuja_pagina([0,3,valArray])      
+    }
+    //Jquery para mostrar u ocultar la contraseña
+    $(document).on("click","#ImgPw",function(event){
+        var btnPw = document.querySelector("#togglePassword");
+        var txtPw = document.querySelector("#pw_text");
+        //toogle
+        var tipoCampo = txtPw.getAttribute("type") === "password" ? "text" : "password";
+        txtPw.setAttribute("type", tipoCampo);
+        // toggle the eye icon
+        this.classList.toggle('fa-eye');
+        this.classList.toggle('fa-eye-slash');
+
+    })
+    
+    //Jquery para dibujar el calendario
+    function dibuja_calendario(eventos2){
+
+    var eventos = []
+    var TodoDia ;
+    for(let ev of eventos2){
+        var fechaInicio = new Date(ev[1]);
+        var fechaFinalizacion = new Date(ev[2]);
+        TodoDia = false;
+        // Verificar si las fechas de inicio y finalización están en el mismo día
+        if((fechaInicio.getFullYear() === fechaFinalizacion.getFullYear() &&
+            fechaInicio.getMonth() === fechaFinalizacion.getMonth() &&
+            fechaInicio.getDay() === fechaFinalizacion.getDay()) || ev[2] == "1900-01-01 00:00:00"){
+                TodoDia = true;
+            }
+        if (fechaInicio.getDate() == fechaFinalizacion.getDate()) {
+            
+            fechaFinalizacion.setDate(fechaFinalizacion.getDate() + 1); // Mover la fecha al siguiente día
+            fechaFinalizacion.setHours(0, 0, 0, 0); // Establecer la hora al final del día (23:59:59)
+            ev[2] = new Date(fechaFinalizacion)
+      
+        }
+        
+        eventos.push({ title: ev[0],
+            start: ev[1],
+            end: ev[2],
+            allDay: TodoDia,
+            color: ev[3]
+        });
+        
+    }
+    
+        var calendarEl = document.getElementById('calendar');
+        var today = new Date(); 
+        var formattedDate = today.toISOString().split('T')[0];
+        calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'dayGridMonth',
+    initialDate: formattedDate,
+    dayHeaderFormat: getDayHeaderFormat(),
+    dayMaxEventRows: 3,
+    headerToolbar: {
+        left: 'prev',
+        center: 'title',
+        right: 'next'
+    },
+    buttonText: {
+        month: 'Mes',
+        today: 'Hoy'
+    },
+    events: eventos,
+    eventClick: function(info) {
+        tippy(info.el, {
+            content: info.event.title, // Aquí puedes usar el texto completo
+            trigger: 'click', // Cambia a 'mouseenter' si prefieres hover
+            placement: 'top', 
+            size: 'large'
+        });
+
+        // Mostrar el tooltip manualmente
+        tippy(info.el);
+        tippy.show();
+    },
+    locale: 'es',
+    firstDay: 1,
+    contentHeight: '600px',
+    fixedWeekCount: false,
+    showNonCurrentDates: false,
+
+    // Personalizar eventos
+    // eventDidMount: function(info) {
+    //             // Ocultar hora "0"
+    //             if (startDate.getHours() === 0 && startDate.getMinutes() === 0) {
+    //                 const timeElement = info.el.querySelector('.fc-event-time');
+    //                 if (timeElement) timeElement.style.display = 'none';
+    //             }
+    //         }
+        });
+calendar.render();
+    }
+    //Formato calendario
+    function getDayHeaderFormat() {
+    
+        const mobileFormat = { weekday: 'short' }; // Abreviado
+        const desktopFormat = { weekday: 'long' }; // Completo
+
+        return window.matchMedia("(max-width: 768px)").matches ? mobileFormat : desktopFormat;
+    }
+    //Manejo de la golocalización
+
+    function guardarJornada(){
+        if (navigator.geolocation) {
+            let localizacion = navigator.geolocation.getCurrentPosition(GestionaUbicacion,errorUbicacion);
+        }else{
+            dibuja_pagina([0,0]);
+        }
+        
+    }
+    function  errorUbicacion(error){
+        console.error('Error al obtener la ubicación:', error);
+        dibuja_pagina([0, 0]);
+    }
+    //funcion asincrona para llamar a la api de hora local
+    async function obtenerHoraLocal(lat, lon) {
+            var url = `https://api.timezonedb.com/v2.1/get-time-zone?key=XY0CA8W8ZRCV&format=json&by=position&lat=${lat}&lng=${lon}`;
+            try {
+                
+                var response = await fetch(url);
+                if (!response.ok && response == null) {
+                    throw new Error('Error al obtener hora local');
+                }
+                
+                var data = await response.json();
+                
+                return [data.formatted,data.gmtOffset];
+            } catch (error) {
+                alert('Error al obtener la hora local, asegurese de tener la ubicación activada');
+                return null;
+            }
+    }
+
+    async function GestionaUbicacion(posicion) {
+        try {
+            var latitud = posicion.coords.latitude;
+            var longitud = posicion.coords.longitude;
+            var arrayhora = await obtenerHoraLocal(latitud,longitud);
+            var horaLocal = arrayhora[0];
+            
+            dibuja_pagina([0,0,latitud,longitud,horaLocal]);
+            } catch (error) {
+                dibuja_pagina([0,0]);
+            }
+    }
+
+    function CargarMapaFichaje(){
+        if($("#map").length){
+            try{
+            let localizacion = navigator.geolocation.getCurrentPosition(EditarPosicionMapa);
+           
+            }catch(e){
+                $('#map').hide();
+                document.getElementById("map").innerHTML = "Error al obtener la ubicación";
+                console.log(e);
+            }
+        }        
+    }
+    async function EditarPosicionMapa(posicion){
+        
+        var latitud = posicion.coords.latitude;
+        var longitud = posicion.coords.longitude;
+        var arrayhora = await obtenerHoraLocal(latitud,longitud);
+        var horaLocal = arrayhora[0];
+        var map = L.map('map').setView([latitud, longitud], 13);
+
+        // Agregar el mapa base de OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        var marker = L.marker([latitud, longitud]).addTo(map);
+        // Agregar un marcador en coordenadas específicas
+        actualizarHora(horaLocal,arrayhora[1]);
+        setInterval(async () => {
+            horaLocal.setMinutes(horaLocal.getMinutes() + 1);
+            await actualizarHora(horaLocal.toLocaleDateString());
+        }, 60000);
+         
+    }
+    async function actualizarHora(horaLocal,GMTSec) {
+
+        // Quitar los segundos del formato de hora (suponiendo formato 'HH:MM:SS')
+        let [fecha, hora] = horaLocal.split(' ');
+        let [año, mes, día] = fecha.split('-'); // Descomponer la fecha
+        let [horas, minutos] = hora.split(':'); // Descomponer la hora
+
+        // Formatear la fecha como "día/mes/año"
+        let fechaFormateada = `${día}/${mes}/${año}`;
+
+        // Formatear la hora como "horas:minutos"
+        let horaFormateada = `${horas}:${minutos}`;
+
+        // Actualizar el contenido del div con la hora sin segundos
+        
+        document.getElementById("fechaActualAutomatica").innerHTML =  `<span style="font-size: 2em; font-weight: bold;">${fechaFormateada} ${horaFormateada}</span> 
+            <span style="style="font-size: 21m;">  (${GMTSec > 0 ? ' GMT+' + GMTSec / 3600 : ' GMT' + GMTSec / 3600} )</span>`;
+
+    }
+
+    function mostrarMapaJornadafichaje(latitud,longitud){
+
+        // let m = document.getElementById('mapafichaje');
+        // m.innerHTML = '';
+        $('#ModalMapaJornada').modal('show');
+        if (!map2) {
+            map2 = L.map('mapafichaje');    
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map2);
+        }
+        map2.setView([latitud, longitud], 14)
+        
+        if (map2.marker) {
+            map2.removeLayer(map2.marker);
+        }
+        map2.marker = L.marker([latitud, longitud]).addTo(map2);
+        
+        //map2.marker.bindPopup(texto).openPopup();
+        //map2.marker2.bindPopup("entrada/salida").openPopup();
+        setTimeout(function () {
+            map2.invalidateSize();
+        }, 200);
+    }
+    
+    
+    
+
+    //funcion para llenar los modales con los datos correspondientes del portal cliente
+    function cargarModalValidacion(tipo,id,codigo){
+        let txtTitulo;
+        if(tipo == 0){
+            txtTitulo = 'Validar tarea '+codigo;
+        }else if(tipo == 2){
+            txtTitulo = 'Adjuntar a tarea '+codigo;
+        }else{
+            txtTitulo = 'Nueva petición';
+        }
+        document.getElementById("CabeceraModalSolicitud").innerHTML = txtTitulo;
+        $('#modalValidaciones').modal('show');
+        
+    }
+    
+    function cargarModalFormularioDinamico(nombreFormulario = null,IdRegistro = null,Valores = null) {
+
+        if(nombreFormulario == null){
+            nombreFormulario = 'modalFormularioDinamico';
+        }
+
+
+        const tituloAlta = document.querySelector('#'+nombreFormulario+' .modal-title');
+        const tituloModificacion = document.querySelector('#'+nombreFormulario+' .modal-title-modificacion');
+        var NombreForm = nombreFormulario;
+
+        
+        if(IdRegistro === null && Valores === null){
+            if (tituloAlta) tituloAlta.style.display = '';
+            if (tituloModificacion) tituloModificacion.style.display = 'none';
+            $('#'+nombreFormulario).modal('show');
+        }else{
+            const modal = $('#'+nombreFormulario);
+            if (tituloAlta) tituloAlta.style.display = 'none';
+            if (tituloModificacion) tituloModificacion.style.display = '';
+            modal.modal('show');
+
+            // Esperar a que el modal esté completamente visible
+            modal.on('shown.bs.modal', function () {
+                const formulario = document.querySelector('#'+nombreFormulario+' form');
+                if (!formulario) {
+                    console.warn('Formulario no encontrado dentro del modal');
+                    return;
+                }
+
+                const camposVisibles = Array.from(formulario.querySelectorAll('input, select, textarea'))
+                    .filter(el => el.type !== 'hidden' && el.type !== 'button' && el.type !== 'submit');
+
+                camposVisibles.forEach((campo, index) => {
+                    if (index < Valores.length) {
+                        if (campo.type === 'datetime-local') {
+                            campo.value = Valores[index].substring(0, 16);
+                        } else if (campo.classList.contains('selectBuscar-input')) {
+                            asignarValorSelectBuscar(campo.id, Valores[index]);
+                        } else {
+                            campo.value = Valores[index];
+                        }
+                    }
+                });
+                const inputIdModificar = document.getElementById('IdModificar');
+                if (inputIdModificar && IdRegistro !== null) {
+                    inputIdModificar.value = IdRegistro;
+                }
+
+                // Remover listener para evitar duplicación si se llama múltiples veces
+                modal.off('shown.bs.modal'); 
+            });
+        }
+
+    }
+
+
+    // funcion auxliar para poder asignar valores dinamicamente al select buscar  
+    function asignarValorSelectBuscar(inputId, valor) {
+     
+        const input = document.getElementById(inputId);
+        if (!input) return;
+
+        const lista = input.closest('.selectBuscar').querySelectorAll('.selectBuscar-item');
+        const item = Array.from(lista).find(el => el.dataset.value === valor.toString());
+
+        if (item) {
+            input.dataset.value = item.dataset.value;
+            input.value = item.textContent.trim();
+        } else {
+            input.dataset.value = '';
+            input.value = '';
+        }
+    }
+  
+
+    function cargarModalFirma(Id,TipoF,IdP,IdTp,IdS,IPc,BBDD){
+        //elemento.addEventListener('touchmove', miFuncion, { passive: true });
+        var parentWidth;
+        var canvas = document.getElementById("signature-pad");
+        var ctx = canvas.getContext('2d');
+        var firmaDataUrl;
+       
+        // var canvas = document.getElementById('campoFirma');
+        // var signaturePad = new SignaturePad(canvas);
+        //para al abrir y cerrar el modal
+        
+        $('#ModalFirma').modal('show');             
+        $('#ModalFirma').on('shown.bs.modal', function () {
+            parentWidth = $("#wrapperFirma").width(); 
+            parentHeight = $("#wrapperFirma").height();
+            canvas.width = parentWidth;
+            canvas.height = parentHeight;
+        });
+        //canvas.setAttribute("width", parentWidth);
+        
+        signaturePad = new SignaturePad(canvas, {
+            backgroundColor: 'rgb(250,250,250)'
+        });
+        btnsv = document.getElementById('btnGuardarFirma');
+        btnsv.setAttribute("onclick","guardarFirma("+Id+","+TipoF+","+IdP+","+IdTp+","+IdS+",'"+IPc+"','"+BBDD+"')");
+    }
+
+    //ModalBuscar
+    function showOptions() {
+        document.getElementById("optionsList").style.display = "block";
+        anadirEventosSelectBuscar();
+    }
+
+  function filterOptions() {
+    const input = document.querySelector(".selectBuscar-input").value.toLowerCase();
+    const options = document.querySelectorAll(".selectBuscar-item");
+
+    options.forEach(option => {
+      const text = option.textContent.toLowerCase();
+      option.style.display = text.includes(input) ? "block" : "none";
+    });
+  }
+ function anadirEventosSelectBuscar(){
+    document.addEventListener("click", function(event) {
+    const dropdown = document.querySelector(".selectBuscar");
+    if (dropdown && !dropdown.contains(event.target)) {
+      document.getElementById("optionsList").style.display = "none";
+    }
+  });
+
+  document.querySelectorAll(".selectBuscar-item").forEach(option => {
+    option.addEventListener("click", function() {
+      document.querySelector(".selectBuscar-input").value = option.textContent;
+      document.querySelector(".selectBuscar-input").setAttribute("data-value", option.getAttribute("data-value"));
+      document.getElementById("optionsList").style.display = "none";
+    });
+  });
+ 
+ }
+  
+
+    function toggleContentPorId(contentId) {
+            // Muestra el contenido seleccionado
+            $('#'+contentId).toggleClass("d-none");
+            //$('#'+contentId+"IMG").toggleClass("rotar_imagen_90");
+    }
+
+    function CU(){
+
+        let idU = $("#SelectBuscar-InputFinal").attr("data-value");
+        //alert(idU);
+        $('#modalSuperAdmin').modal('hide');
+        $('.modal-backdrop').hide();
+        dibuja_pagina([0,13,[idU]]);
+
+    }
+
+
+    function guardarFirma(Id,TipoF,IdP,IdTp,IdS,IPc,BBDD){
+        var canvas = document.getElementById("signature-pad");
+        var ctx = canvas.getContext('2d');
+        var firmaDataUrl;
+        firmaDataUrl = signaturePad.toDataURL();
+
+        $.ajax({
+            type: 'POST',
+            url: 'php/FirmarArchivo.php', // Archivo PHP para procesar y guardar la firma
+            data: { firmaDataUrl: firmaDataUrl,
+                Id:Id,
+                IdP:IdP,
+                IdTp:IdTp,
+                IdS:IdS,
+                TipoF:TipoF,
+                IPc:IPc,
+                BBDD:BBDD
+                },
+            success: function(response) {
+                if(response == 1){
+                    if(IdP == 25){
+                        alert("Nómina firmada con exito");
+                    }else{
+                        alert("Documento firmado con exito");
+                    }
+                    
+                    $('#ModalFirma').hide();
+                    $('.modal-backdrop').hide();
+                    $('body').css({
+                        'overflow': 'auto',
+                        'padding-right': '0'
+                    });
+                    dibuja_pagina([0,0,Id]);
+                }else{
+                    alert(response);
+                    //alert("Ha habido un error al firmar el archivo");
+                }
+            },
+            error: function(error) {
+                console.error('Error al guardar la firma:', error);
+            }
+        });
+
+    }
+
+    function recargarCSSCadaHora(cssFileName, horas) {
+            var now = new Date().getTime();
+            var intervalo = horas * 60 * 60 * 1000;
+            var lastReload = localStorage.getItem('cssReloadTime');
+            if (!lastReload || now - lastReload > intervalo) {
+                var link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = cssFileName + '?v=' + now; 
+                document.head.appendChild(link);
+                localStorage.setItem('cssReloadTime', now);
+            } else {
+                var link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = cssFileName;
+                document.head.appendChild(link);
+            }
+        }
+
+    //cambiar el color y el switch del modal
+    $(document).on("change","#togglePeticionSwitch",function(event){
+        var switchLabel2 = $('.form-check-label2');
+        if (this.checked) {
+            switchLabel2.text('Mejora');
+        } else {
+            switchLabel2.text('Incidencia');
+        }
+    });
+    
+
+    //****************************************************************************************/
+                        // Evitar que recargue al enviar un formulario
+    //****************************************************************************************/
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+
+    /***** Comprobar Tamaño del archivo ******/
+    $(document).on("change","#Archivo",function(event){
+        var maxSize = 5 * 1024 * 1024; // 5 MB (en bytes)
+        if (this.files[0].size > maxSize) {
+            // cambiar por nuestro modal
+            alert('El archivo demasiado grande. El tamaño máximo es 5 MB.');
+            this.value = ''; 
+        }
+    });
+    //****************************************************************************************/
+    // Añadir la funcionalidad  al header de estar fijado a la bara superior al hacer scroll
+    //****************************************************************************************/
+    $(document).ready(function() {
+        var alturaHedaderOriginal = $('#header_agrupado').outerHeight();
+        //$('#header_agrupado img').addClass('reduccion_header');
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 0) {
+                $('#header_agrupado').addClass('fixed-top');
+                if ($('#SeparadorHeader').length === 0) {
+                    let elementoSeparador =  $('<div id="SeparadorHeader"><br></div>');
+                    elementoSeparador.insertAfter('#header_agrupado');
+                    //$('#header_agrupado img').css('height','100px');
+                    $('#InicioFin_Jornada').css('height','');
+                    $('.flecha_volver img').css('height','30px');
+                    $('#SeparadorHeader').css('margin-top', $('#header_agrupado').outerHeight()+'px');
+                    setTimeout(function(){
+                        //simplemente que espere
+                    }, 300);             
+                }
+            } else {
+                $('#header_agrupado').removeClass('fixed-top');
+                //$('#header_agrupado img').removeClass('reduccion');
+                $('#SeparadorHeader').remove();
+                $('#header_agrupado img').css('height','');
+            }
+        });
+    });
+    
+</script>
+</head>
+
+<body onload="dibuja_pagina()" style="min-height: 100%;">
+    <div id="cookie-modal">
+        <p>Este sitio web utiliza cookies. Al continuar navegando, aceptas el uso de cookies. <a  href="html/politica-de-cookies.html" target="_blank">Más información</a></p>
+        <button onclick="aceptarCookies()" class="btn btn-primary">Aceptar</button>
+    </div>
+
+    <div class="modal fade" id="popupError" tabindex="-1" aria-labelledby="TituloError" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="TituloError">Mensaje</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="msgError">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button> 
+              <!---->
+            </div>
+          </div>
+        </div>
+    </div>
+    
+    
+
+    
+
+    <!-- Ruedita de carga --> 
+    <!-- <div class="loader" id="ruedita" style="display: none;"></div> -->
+<div id="cuerpo" class="container-fluid px-0"></div>
+
+</body>
+
+</html>

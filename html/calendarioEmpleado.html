@@ -1,0 +1,73 @@
+
+<!-- Plantilla Seccion de Documentos -->
+
+<div class="row  h-100 justify-content-center my-4" id="no-margin">
+  <!--id="no-padding"-->
+   <div class="col-12 col-lg-9" id="no-padding"> 
+    <br>
+  <div class="card shadow-2-strong ">
+    <div id="calendar"></div>
+    </div>
+  </div>
+</div>
+<div id="panelDeslizable" class="panel-deslizable">
+  <div class="panel-contenido ">
+      <h3>Filtros</h3>
+      <br>
+   
+    <h5 onclick="toggleContentPorId('EstadoPanelDeslizable')" class="aparienciaBoton">Tipo </h5>
+    <div class="container">
+  <div class="row mb-3">
+    <div class="col-6 d-flex justify-content-end">
+      <input type="checkbox" class="btn-check" value="1" id="btn1" autocomplete="off" checked>
+      <label class="btn btn-check-vacaciones-tipos w-100" for="btn1">Asistencia</label>
+    </div>
+    <div class="col-6 d-flex justify-content-start">
+      <input type="checkbox" class="btn-check" value="2" id="btn2" autocomplete="off" checked>
+      <label class="btn btn-check-vacaciones-tipos w-100" for="btn2">Contrato</label>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-6 d-flex justify-content-end">
+      <input type="checkbox" class="btn-check" value="4" id="btn3" autocomplete="off" >
+      <label class="btn btn-check-vacaciones-tipos w-100" for="btn3">Formación</label>
+    </div>
+    <div class="col-6 d-flex justify-content-start">
+      <input type="checkbox" class="btn-check" value="5" id="btn4" autocomplete="off" >
+      <label class="btn btn-check-vacaciones-tipos w-100" for="btn4">Incidencias</label>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-6 d-flex justify-content-end">
+      <input type="checkbox" class="btn-check" value="6" id="btn5" autocomplete="off" >
+      <label class="btn btn-check-vacaciones-tipos w-100" for="btn5">Material</label>
+    </div>
+    <div class="col-6 d-flex justify-content-start">
+      <input type="checkbox" class="btn-check" value="7" id="btn6" autocomplete="off" >
+      <label class="btn btn-check-vacaciones-tipos w-100" for="btn6">Nóminas</label>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-6 offset-3 d-flex justify-content-center">
+      <input type="checkbox" class="btn-check" value="8" id="btn7" autocomplete="off" checked>
+      <label class="btn btn-check-vacaciones-tipos w-100" for="btn7">Vacaciones</label>
+    </div>
+  </div>
+</div>
+      <br>
+        <button class="btn btn-primary col-4 offset-2" onclick="aplicaFiltrosCalendario()">Aplicar</button>
+        <button class="btn btn-secondary col-4 offset-1" onclick="desplegarPanelFiltros()">Cancelar</button>
+      
+    
+  </div>
+</div>
+<!-- <button onclick="AbrirFiltroCalendarioModal()" style="all: initial;position:fixed;right:13%;bottom:10px;cursor: pointer;" class="btn_acciones"><img src="Img/lupa.png" width="50px"></button> -->
+
+
+<!-- <div class="mb-3 col-12 col-md-10 offset-md-1 input-group-lg"><label for="IdTipo" class="form-label">Tipo de Documento</label><select class="form-select border-secondary" aria-label="Tipo de Documento" id="IdTipo"><option value="112" selected="">Asistencia</option><option value="113">Incidencia</option><option value="113">Vacaciones</option><option value="113">Formacion</option></select></div> -->
+    
+    
+    

@@ -1,0 +1,36 @@
+<!-- Plantilla Seccion de Documentos -->
+<div class="row  h-100 justify-content-center my-4" id="no-margin">
+  <!--id="no-padding"-->
+   <div class="col-12 col-lg-9" id="no-padding"> 
+    <br>
+  <div class="card shadow-2-strong px-2 px-lg-0">
+    %LineasE%
+    </div>
+  </div>
+</div>
+<div id="panelDeslizable" class="panel-deslizable">
+  <div class="panel-contenido ">
+      <h3>Filtros</h3>
+      <br>
+      
+      <h5 onclick="toggleContentPorId('fechaPanelDeslizable')" class="aparienciaBoton">Fecha </h5>
+      <!-- <img src="Img/IconosAcciones/MayorQueNegrita.png" id="fechaPanelDeslizableIMG" width="11px" > -->
+      <div id="fechaPanelDeslizable" class="seccion-panelDeslizable">
+        <input type="date" id="F.IniDeslizable" class="form-control mb-3" placeholder="Fecha Inicio">
+        <input type="date" id="F.FinDeslizable" class="form-control mb-3" placeholder="Fecha Fin">
+      </div>
+      <h5 onclick="toggleContentPorId('EstadoPanelDeslizable')" class="aparienciaBoton">Estado </h5>
+      <div id="EstadoPanelDeslizable" class="seccion-panelDeslizable">
+        <select class="form-select border-secondary" aria-label="Estado" id="">
+          <option value="" selected>Sin asignar</option>
+          <option value="" >Completado</option>
+          <option value="" >Sin confirmar</option>
+        </select>
+      </div>
+      <br>
+      <button class="btn btn-primary" onclick="desplegarPanelFiltros()">Aplicar</button>
+      <button class="btn btn-secondary" onclick="desplegarPanelFiltros()">Cancelar</button>
+      
+  </div>
+</div>
+    

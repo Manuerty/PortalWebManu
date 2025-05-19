@@ -1,0 +1,4 @@
+SELECT id,codigo,Fecha,NombreComercial,Descripcion,Estado,tipo,PinDescargas,OrigenImpresion,importe,PinDescargas 
+    FROM vw_PortalCliente_Documentos 
+    WHERE tipo=? AND IdSociedad=? AND IdCliente=? 
+    ORDER BY Fecha DESC, Codigo DESC;
