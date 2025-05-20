@@ -1,4 +1,11 @@
 <?php
+
+require_once "Clases/controlador.php";
+require_once 'Clases/estado.php';
+session_start();
+
+
+
 header('Content-Type: application/json');
 
 if (!isset($_FILES['archivo'])) {
@@ -16,7 +23,9 @@ if (strpos($mimeType, 'image/') !== 0 && $mimeType !== 'application/pdf') {
 
 $fileData = base64_encode(file_get_contents($filePath));
 
-$conceptos = ["Comida", "Transporte", "Alojamiento", "Ropa", "Combustible", "Otros"];
+
+
+$conceptos = $_SESSION["Controlador"]->miEstado->listaConceptos;
 $listaConceptos = implode(", ", $conceptos);
 
 $prompt = <<<PROMPT
