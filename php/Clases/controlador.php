@@ -85,8 +85,7 @@ class Controlador
         $_SESSION['footerCliente'] = file_get_contents($rutaFooter);
     }
 
-    $conceptos = ["Comida", "Transporte", "Alojamiento", "Ropa", "Combustible", "Otros"];
-    $_SESSION["Controlador"] -> miEstado -> listaConceptos = $conceptos;;
+    
 }
 
     

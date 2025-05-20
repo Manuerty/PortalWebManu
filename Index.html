@@ -957,8 +957,7 @@ function procesarComboBox(callback) {
             if (typeof callback === "function") callback();
         },
         error: function(error) {
-            console.error('Error al cargar el ComboBox:', error);
-            if (typeof callback === "function") callback(); // opcional para no bloquear
+            console.error('Error al cargar el ComboBox:', error.responseText || error.statusText || error);
         }
     });
 }
@@ -975,6 +974,8 @@ function llenarOpcionesConcepto() {
     opcionDefault.value = "";
     opcionDefault.textContent = "Seleccione...";
     select.appendChild(opcionDefault);
+
+    consolesole.log("Conceptos a agregar:", conceptos);
 
     // Agregar opciones desde el array
     conceptos.forEach(item => {
