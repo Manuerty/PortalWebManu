@@ -1,6 +1,8 @@
 
 <?php
 class Estado{
+
+    public $listaConceptos = array();
     //variables de estado?
     public $Estado;
     public $EstadosAnteriores = array();

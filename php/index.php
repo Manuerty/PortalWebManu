@@ -14,6 +14,8 @@ session_start();
 try {
     if (!isset($_SESSION["Controlador"])) {
         $_SESSION["Controlador"] = new Controlador;
+        $conceptos = ["Comida", "Transporte", "Alojamiento", "Ropa", "Combustible", "Otros"];
+        $_SESSION["Controlador"] -> miEstado -> listaConceptos = $conceptos;
     }
     
     function devuelveContenido(){

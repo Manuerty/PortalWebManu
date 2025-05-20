@@ -877,6 +877,8 @@ calendar.render();
 
     }
 
+
+
 function cargarAsistenteIa() {
     if ($('#modalAsistenteIa').length === 0) {
         $('#contenedor-modal-ia').load('html/modalAsistenteIa.html', function() {
@@ -932,34 +934,35 @@ function procesarInformacionAsistenteIa() {
 
 function abrirModalRegistroTicketConDatos(data) {
     $('#modalContainer').load('html/modalRegistroTicket.html', function () {
-        $('#modalRegistroTicket').modal({
+        const $modal = $('#modalRegistroTicket');
+        $modal.modal({
             backdrop: 'static',
             keyboard: false
         }).modal('show');
 
-        const fechaInput = document.getElementById('fechaTicket');
-        const importeInput = document.getElementById('importeTicket');
-        const conceptoSelect = document.getElementById('conceptoTicket');
-        const jsonTextarea = document.getElementById('jsonProcesado');
+        // Extraemos los valores con las claves correctas
+        const fechaRaw = data["Fecha Ticket"];
+        const importeRaw = data["Importe Ticket"];
+        const conceptoRaw = data["Concepto Ticket"];
 
-        if (fechaInput && data.fecha) {
-            const fecha = new Date(data.fecha);
-            if (!isNaN(fecha)) {
-                fechaInput.value = fecha.toISOString().split('T')[0];
+        if (fechaRaw) {
+            // La fecha viene en formato "dd/mm/yyyy", hay que convertirla a ISO para el input date
+            const parts = fechaRaw.split('/');
+            if (parts.length === 3) {
+                const fechaISO = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+                $modal.find('#fechaTicket').val(fechaISO);
             }
         }
 
-        if (importeInput && data.importe) {
-            importeInput.value = parseFloat(data.importe).toFixed(2);
+        if (importeRaw) {
+            $modal.find('#importeTicket').val(parseFloat(importeRaw).toFixed(2));
         }
 
-        if (conceptoSelect && data.concepto) {
-            conceptoSelect.value = data.concepto;
+        if (conceptoRaw) {
+            $modal.find('#conceptoTicket').val(conceptoRaw);
         }
 
-        if (jsonTextarea) {
-            jsonTextarea.value = JSON.stringify(data, null, 2);
-        }
+        $modal.find('#jsonProcesado').val(JSON.stringify(data, null, 2));
 
         window.datosTicketProcesado = data;
     });
