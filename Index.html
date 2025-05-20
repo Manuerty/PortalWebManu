@@ -932,39 +932,100 @@ function procesarInformacionAsistenteIa() {
     });
 }
 
+let conceptos = [];
+
+function procesarComboBox(callback) {
+    $.ajax({
+        type: 'POST',
+        url: 'php/ComboBox.php',
+        data: { Accion: 0 },
+        dataType: 'json',
+        success: function(response) {
+            conceptos = response;
+            console.log("Conceptos recibidos:", conceptos);
+
+            let select = $('#SelectBuscar-InputFinal');
+            select.empty();
+            conceptos.forEach(function(item) {
+                select.append(`<option value="${item}">${item}</option>`);
+            });
+
+            select.removeClass('d-none');
+            select.focus();
+            select.selectpicker('refresh');
+
+            if (typeof callback === "function") callback();
+        },
+        error: function(error) {
+            console.error('Error al cargar el ComboBox:', error);
+            if (typeof callback === "function") callback(); // opcional para no bloquear
+        }
+    });
+}
+
+
+function llenarOpcionesConcepto() {
+    const select = document.getElementById('conceptoTicket');
+    if (!select) return;
+
+    select.innerHTML = ""; // Limpiar opciones actuales
+
+    // Agregar opción por defecto
+    const opcionDefault = document.createElement('option');
+    opcionDefault.value = "";
+    opcionDefault.textContent = "Seleccione...";
+    select.appendChild(opcionDefault);
+
+    // Agregar opciones desde el array
+    conceptos.forEach(item => {
+        const opcion = document.createElement('option');
+        opcion.value = item;
+        opcion.textContent = item;
+        select.appendChild(opcion);
+    });
+}
+
 function abrirModalRegistroTicketConDatos(data) {
-    $('#modalContainer').load('html/modalRegistroTicket.html', function () {
-        const $modal = $('#modalRegistroTicket');
-        $modal.modal({
-            backdrop: 'static',
-            keyboard: false
-        }).modal('show');
+    // Primero cargar los conceptos dinámicamente y luego abrir el modal
+    procesarComboBox(function() {
+        // Ahora que 'conceptos' está cargado, puedes llenar el combo y abrir modal
+        $('#modalContainer').load('html/modalRegistroTicket.html', function () {
+            const $modal = $('#modalRegistroTicket');
 
-        // Extraemos los valores con las claves correctas
-        const fechaRaw = data["Fecha Ticket"];
-        const importeRaw = data["Importe Ticket"];
-        const conceptoRaw = data["Concepto Ticket"];
+            llenarOpcionesConcepto();
 
-        if (fechaRaw) {
-            // La fecha viene en formato "dd/mm/yyyy", hay que convertirla a ISO para el input date
-            const parts = fechaRaw.split('/');
-            if (parts.length === 3) {
-                const fechaISO = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
-                $modal.find('#fechaTicket').val(fechaISO);
+            $modal.modal({
+                backdrop: 'static',
+                keyboard: false
+            }).modal('show');
+
+            // Extraer datos del JSON
+            const fechaRaw = data["Fecha Ticket"];
+            const importeRaw = data["Importe Ticket"];
+            const conceptoRaw = data["Concepto Ticket"];
+
+            if (fechaRaw) {
+                const parts = fechaRaw.split('/');
+                if (parts.length === 3) {
+                    const fechaISO = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+                    $modal.find('#fechaTicket').val(fechaISO);
+                }
             }
-        }
 
-        if (importeRaw) {
-            $modal.find('#importeTicket').val(parseFloat(importeRaw).toFixed(2));
-        }
+            if (importeRaw) {
+                $modal.find('#importeTicket').val(parseFloat(importeRaw).toFixed(2));
+            }
 
-        if (conceptoRaw) {
-            $modal.find('#conceptoTicket').val(conceptoRaw);
-        }
+            if (conceptoRaw) {
+                const select = document.getElementById('conceptoTicket');
+                if ([...select.options].some(opt => opt.value === conceptoRaw)) {
+                    $modal.find('#conceptoTicket').val(conceptoRaw);
+                }
+            }
 
-        $modal.find('#jsonProcesado').val(JSON.stringify(data, null, 2));
-
-        window.datosTicketProcesado = data;
+            $modal.find('#jsonProcesado').val(JSON.stringify(data, null, 2));
+            window.datosTicketProcesado = data;
+        });
     });
 }
 
@@ -1071,6 +1132,8 @@ function abrirModalRegistroTicketConDatos(data) {
         dibuja_pagina([0,13,[idU]]);
 
     }
+
+    
 
 
     function guardarFirma(Id,TipoF,IdP,IdTp,IdS,IPc,BBDD){

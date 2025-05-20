@@ -42,31 +42,53 @@ class Controlador
     function __destruct(){
         $_SESSION["Controlador"] = $this;
     }
-    function obtenerDatosInicio(){
-        $dirEmpresa = './../'.$_COOKIE['EmpresaPD'];
-        $datosConn = file_get_contents($dirEmpresa."/datosInicio.json");
-        $datosConn = json_decode($datosConn, true);
-        $_SESSION["NombreM"] = $datosConn["NombreM"];
-        if($datosConn["imgLogo"] != ""){
-            $_SESSION["imgLogo"] = $datosConn["imgLogo"];
-        }
-        $_SESSION["TipoPortal"] = $datosConn["TipoPortal"];
-
-        //comprobar si existe el header y el footer
-        if(file_exists($dirEmpresa.'/html/header.html')){
-            $fileheader = fopen($dirEmpresa.'/html/header.html', "r");
-            $filesizeheader = filesize($dirEmpresa.'/html/header.html');
-            $fileheadertext = fread($fileheader, $filesizeheader);
-            $_SESSION['headerCliente'] = $fileheadertext;
-        }
-        if(file_exists($dirEmpresa.'/html/footer.html')){
-            $filefooter = fopen($dirEmpresa.'/html/footer.html', "r");
-            $filesizefooter = filesize($dirEmpresa.'/html/footer.html');
-            $filefootertext = fread($filefooter, $filesizefooter);
-            $_SESSION['footerCliente'] = $filefootertext;
-        }
-
+    function obtenerDatosInicio() {
+    if (!isset($_COOKIE['EmpresaPD'])) {
+        error_log("Cookie 'EmpresaPD' no está definida.");
+        return;
     }
+
+    $dirEmpresa = './../' . $_COOKIE['EmpresaPD'];
+    $rutaJson = $dirEmpresa . "/datosInicio.json";
+
+    if (!file_exists($rutaJson)) {
+        error_log("No se encuentra el archivo datosInicio.json en: " . $rutaJson);
+        return;
+    }
+
+    $datosRaw = file_get_contents($rutaJson);
+    $datosConn = json_decode($datosRaw, true);
+
+    if (!is_array($datosConn)) {
+        error_log("Error al decodificar JSON desde: " . $rutaJson);
+        return;
+    }
+
+    // Asignación segura a variables de sesión
+    $_SESSION["NombreM"] = $datosConn["NombreM"] ?? 'Nombre por defecto';
+
+    if (!empty($datosConn["imgLogo"])) {
+        $_SESSION["imgLogo"] = $datosConn["imgLogo"];
+    }
+
+    $_SESSION["TipoPortal"] = $datosConn["TipoPortal"] ?? 'Portal';
+
+    // Leer header si existe
+    $rutaHeader = $dirEmpresa . '/html/header.html';
+    if (file_exists($rutaHeader)) {
+        $_SESSION['headerCliente'] = file_get_contents($rutaHeader);
+    }
+
+    // Leer footer si existe
+    $rutaFooter = $dirEmpresa . '/html/footer.html';
+    if (file_exists($rutaFooter)) {
+        $_SESSION['footerCliente'] = file_get_contents($rutaFooter);
+    }
+
+    $conceptos = ["Comida", "Transporte", "Alojamiento", "Ropa", "Combustible", "Otros"];
+    $_SESSION["Controlador"] -> miEstado -> listaConceptos = $conceptos;;
+}
+
     
     function almacenarDocumentos($doc){
         $this -> miEstado["documentos"] = $doc;
