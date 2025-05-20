@@ -6,22 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Área del Cliente</title>
-    <!-- font awesome  -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous" />
-    <!--Librerias de bootstrap-->
-    <!--css-->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <!--jquery-->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" 
-        crossorigin="anonymous"></script>
-    <!--jquery-->
-    <script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E="
-        crossorigin="anonymous"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>      
-    <!-- Iconos de boostrap -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css">
+    <!-- Font Awesome (ok dejar igual) -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" crossorigin="anonymous" />
+
+<!-- Bootstrap 4 CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+
+<!-- jQuery 3.x (una sola vez) -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js" crossorigin="anonymous"></script>
+
+<!-- Popper.js para Bootstrap 4 -->
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+
+<!-- Bootstrap 4 JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Bootstrap Icons (ok dejar igual si quieres) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css">
+
     
 
     <!-- <link rel="stylesheet" href="css/header.css">
@@ -875,86 +877,94 @@ calendar.render();
 
     }
 
-    let modalAsistenteIaInstance = null;
-
-    function cargarAsistenteIa() {
-        var modalEl = document.getElementById('modalAsistenteIa');
-        if (!modalEl) {
-            $('#contenedor-modal-ia').load('html/modalAsistenteIa.html', function() {
-                var modalNuevo = document.getElementById('modalAsistenteIa');
-                modalAsistenteIaInstance = new bootstrap.Modal(modalNuevo, {
-                    backdrop: 'static',
-                    keyboard: false
-                });
-                modalAsistenteIaInstance.show();
-            });
-        } else {
-            modalAsistenteIaInstance = new bootstrap.Modal(modalEl, {
+function cargarAsistenteIa() {
+    if ($('#modalAsistenteIa').length === 0) {
+        $('#contenedor-modal-ia').load('html/modalAsistenteIa.html', function() {
+            $('#modalAsistenteIa').modal({
                 backdrop: 'static',
                 keyboard: false
-            });
-            modalAsistenteIaInstance.show();
-        }
-    }
-
-    function procesarInformacionAsistenteIa() {
-        const inputArchivo = document.getElementById('archivo');
-        if (!inputArchivo) {
-            alert("No se encontró el campo para cargar archivos.");
-            return;
-        }
-
-        const archivo = inputArchivo.files[0];
-        if (!archivo) {
-            alert("Por favor, selecciona un archivo.");
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('archivo', archivo);
-
-        fetch('php/procesarGemini.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                alert("Error: " + data.error);
-            } else {
-                // Cerrar modal Asistente IA con Bootstrap 5
-                if (modalAsistenteIaInstance) {
-                    modalAsistenteIaInstance.hide();
-                }
-
-                // Cargar modalRegistroTicket.html dentro del contenedor
-                $('#modalContainer').load('html/modalRegistroTicket.html', function() {
-                    // Insertar datos en el nuevo modal
-                    const preDatos = document.getElementById('datosProcesados');
-                    if (preDatos) {
-                        preDatos.textContent = JSON.stringify(data, null, 2);
-                    }
-
-                    // Abrir modal registro ticket con Bootstrap 5
-                    var modalRegistroEl = document.getElementById('modalRegistroTicket');
-                    if (modalRegistroEl) {
-                        var modalRegistroInstance = new bootstrap.Modal(modalRegistroEl, {
-                            backdrop: 'static',
-                            keyboard: false
-                        });
-                        modalRegistroInstance.show();
-                    }
-
-                    // Guardar datos para uso posterior
-                    window.datosTicketProcesado = data;
-                });
-            }
-        })
-        .catch(err => {
-            console.error("Error en la petición:", err);
-            alert("Error al procesar la información.");
+            }).modal('show');
         });
+    } else {
+        $('#modalAsistenteIa').modal({
+            backdrop: 'static',
+            keyboard: false
+        }).modal('show');
     }
+}
+
+function procesarInformacionAsistenteIa() {
+    const inputArchivo = document.getElementById('archivo');
+    if (!inputArchivo) {
+        alert("No se encontró el campo para cargar archivos.");
+        return;
+    }
+
+    const archivo = inputArchivo.files[0];
+    if (!archivo) {
+        alert("Por favor, selecciona un archivo.");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('archivo', archivo);
+
+    fetch('php/procesarGemini.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert("Error: " + data.error);
+            return;
+        }
+        $('#modalAsistenteIa').one('hidden.bs.modal', function () {
+            abrirModalRegistroTicketConDatos(data);
+        });
+        $('#modalAsistenteIa').modal('hide');
+    })
+    .catch(err => {
+        console.error("Error en la petición:", err);
+        alert("Error al procesar la información.");
+    });
+}
+
+function abrirModalRegistroTicketConDatos(data) {
+    $('#modalContainer').load('html/modalRegistroTicket.html', function () {
+        $('#modalRegistroTicket').modal({
+            backdrop: 'static',
+            keyboard: false
+        }).modal('show');
+
+        const fechaInput = document.getElementById('fechaTicket');
+        const importeInput = document.getElementById('importeTicket');
+        const conceptoSelect = document.getElementById('conceptoTicket');
+        const jsonTextarea = document.getElementById('jsonProcesado');
+
+        if (fechaInput && data.fecha) {
+            const fecha = new Date(data.fecha);
+            if (!isNaN(fecha)) {
+                fechaInput.value = fecha.toISOString().split('T')[0];
+            }
+        }
+
+        if (importeInput && data.importe) {
+            importeInput.value = parseFloat(data.importe).toFixed(2);
+        }
+
+        if (conceptoSelect && data.concepto) {
+            conceptoSelect.value = data.concepto;
+        }
+
+        if (jsonTextarea) {
+            jsonTextarea.value = JSON.stringify(data, null, 2);
+        }
+
+        window.datosTicketProcesado = data;
+    });
+}
+
 
 
 
