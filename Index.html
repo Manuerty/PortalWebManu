@@ -875,6 +875,93 @@ calendar.render();
 
     }
 
+    let modalAsistenteIaInstance = null;
+
+    function cargarAsistenteIa() {
+        var modalEl = document.getElementById('modalAsistenteIa');
+        if (!modalEl) {
+            $('#contenedor-modal-ia').load('html/modalAsistenteIa.html', function() {
+                var modalNuevo = document.getElementById('modalAsistenteIa');
+                modalAsistenteIaInstance = new bootstrap.Modal(modalNuevo, {
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                modalAsistenteIaInstance.show();
+            });
+        } else {
+            modalAsistenteIaInstance = new bootstrap.Modal(modalEl, {
+                backdrop: 'static',
+                keyboard: false
+            });
+            modalAsistenteIaInstance.show();
+        }
+    }
+
+    function procesarInformacionAsistenteIa() {
+        const inputArchivo = document.getElementById('archivo');
+        if (!inputArchivo) {
+            alert("No se encontró el campo para cargar archivos.");
+            return;
+        }
+
+        const archivo = inputArchivo.files[0];
+        if (!archivo) {
+            alert("Por favor, selecciona un archivo.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('archivo', archivo);
+
+        fetch('php/procesarGemini.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert("Error: " + data.error);
+            } else {
+                // Cerrar modal Asistente IA con Bootstrap 5
+                if (modalAsistenteIaInstance) {
+                    modalAsistenteIaInstance.hide();
+                }
+
+                // Cargar modalRegistroTicket.html dentro del contenedor
+                $('#modalContainer').load('html/modalRegistroTicket.html', function() {
+                    // Insertar datos en el nuevo modal
+                    const preDatos = document.getElementById('datosProcesados');
+                    if (preDatos) {
+                        preDatos.textContent = JSON.stringify(data, null, 2);
+                    }
+
+                    // Abrir modal registro ticket con Bootstrap 5
+                    var modalRegistroEl = document.getElementById('modalRegistroTicket');
+                    if (modalRegistroEl) {
+                        var modalRegistroInstance = new bootstrap.Modal(modalRegistroEl, {
+                            backdrop: 'static',
+                            keyboard: false
+                        });
+                        modalRegistroInstance.show();
+                    }
+
+                    // Guardar datos para uso posterior
+                    window.datosTicketProcesado = data;
+                });
+            }
+        })
+        .catch(err => {
+            console.error("Error en la petición:", err);
+            alert("Error al procesar la información.");
+        });
+    }
+
+
+
+
+
+
+
 
     // funcion auxliar para poder asignar valores dinamicamente al select buscar  
     function asignarValorSelectBuscar(inputId, valor) {
@@ -1108,8 +1195,8 @@ calendar.render();
               <h5 class="modal-title" id="TituloError">Mensaje</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" id="msgError">
-            </div>
+                <div class="modal-body" id="msgError"></div>
+
             <div class="modal-footer">
               <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button> 
               <!---->
@@ -1124,8 +1211,9 @@ calendar.render();
 
     <!-- Ruedita de carga --> 
     <!-- <div class="loader" id="ruedita" style="display: none;"></div> -->
-<div id="cuerpo" class="container-fluid px-0"></div>
-
+    <div id="cuerpo" class="container-fluid px-0"></div>
+    <div id="contenedor-modal-ia"></div> 
+    <div id="modalContainer"></div>
 </body>
 
 </html>
