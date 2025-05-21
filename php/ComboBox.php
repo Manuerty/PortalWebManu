@@ -13,8 +13,10 @@ function devuelveContenido() {
     }
 }
 
-    $conceptos = ["Comida", "Transporte", "Alojamiento", "Ropa", "Combustible", "Otros"];
-    $_SESSION["Controlador"] -> miEstado -> listaConceptos = $conceptos;
+    
+    $opciones = $_SESSION["Controlador"] -> miEstado -> listaConceptos;
+
+
 
 if (isset($_POST['Accion']) && $_POST['Accion'] == 0) {
     $opciones = devuelveContenido();

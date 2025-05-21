@@ -922,16 +922,23 @@ function procesarInformacionAsistenteIa() {
         method: 'POST',
         body: formData
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.error) {
-            alert("Error: " + data.error);
-            return;
+    .then(response => response.text())  // Primero obtener texto crudo
+    .then(text => {
+        console.log("Respuesta cruda del servidor:", text);
+        try {
+            const data = JSON.parse(text);
+            if (data.error) {
+                alert("Error: " + data.error + (data.raw ? "\nRespuesta cruda: " + data.raw : ""));
+                return;
+            }
+            $('#modalAsistenteIa').one('hidden.bs.modal', function () {
+                abrirModalRegistroTicketConDatos(data);
+            });
+            $('#modalAsistenteIa').modal('hide');
+        } catch(e) {
+            console.error("Error al parsear JSON:", e);
+            alert("Error: La respuesta del servidor no es JSON válido.");
         }
-        $('#modalAsistenteIa').one('hidden.bs.modal', function () {
-            abrirModalRegistroTicketConDatos(data);
-        });
-        $('#modalAsistenteIa').modal('hide');
     })
     .catch(err => {
         console.error("Error en la petición:", err);
@@ -954,7 +961,7 @@ function procesarComboBox(callback) {
             let select = $('#SelectBuscar-InputFinal');
             select.empty();
             conceptos.forEach(function(item) {
-                select.append(`<option value="${item}">${item}</option>`);
+                select.append(`<option value="${item.IdProyectoMaterialTipo}">${item.Nombre}</option>`);
             });
 
             select.removeClass('d-none');
@@ -987,8 +994,8 @@ function llenarOpcionesConcepto() {
     // Agregar opciones desde el array
     conceptos.forEach(item => {
         const opcion = document.createElement('option');
-        opcion.value = item;
-        opcion.textContent = item;
+        opcion.value = item.IdProyectoMaterialTipo;   // <- aquí accedemos a la propiedad
+        opcion.textContent = item.Nombre;             // <- aquí también
         select.appendChild(opcion);
     });
 }

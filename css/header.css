@@ -69,6 +69,16 @@
   z-index: 999; 
 }
 
+.btn_acciones2 {
+  all: initial;
+  position: fixed;
+  right: 20%;
+  bottom: 10px;
+  cursor: pointer;
+  z-index: 999; 
+}
+
+
  .btn-check-vacaciones-tipos {
   background-color: #f0f0f0; 
   color: #696969;

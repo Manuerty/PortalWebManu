@@ -1,0 +1,9 @@
+Array
+(
+    [0] => Array
+        (
+            [idArticulo] => 6065
+            [Descripcion] => Portal de venta de acciones formativas
+        )
+
+)
