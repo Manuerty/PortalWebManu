@@ -4,18 +4,17 @@
     <div class="modal-content">
     
       <div class="modal-header">
-        <h5 class="modal-title" id="modalAsistenteIaLabel">Asistente IA</h5>
+        <h5 class="modal-title" id="modalAsistenteIaLabel">Analizador de Ticket</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       
       <div class="modal-body">
-        <p>Hola, soy tu asistente IA. ¿En qué puedo ayudarte?</p>
+        <p>Selecciona un ticket para analizarlo</p>
 
         <!-- Input para cargar archivos -->
         <form id="formulario_ticket_gemini" enctype="multipart/form-data">
-          <label for="archivo">Selecciona la imagen o PDF del ticket:</label>
           <input type="file" id="archivo" name="archivo" accept="image/*,application/pdf" required class="form-control-file" />
         </form>
 
