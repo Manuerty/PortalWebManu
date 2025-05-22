@@ -71,7 +71,6 @@ $nombresConceptos = array_map(function($item) {
     return '';
 }, $conceptos);
 
-file_put_contents('debug_articulos_raw.txt', print_r($articulos, true));
 
 // Extraer nombres de artículos
 $nombresArticulos = array_map(function($item) {
@@ -100,9 +99,6 @@ if (empty($nombresArticulos)) {
 $listaConceptos = implode(", ", array_map(fn($c) => '"' . $c . '"', $nombresConceptos));
 $listaArticulos = implode(", ", array_map(fn($c) => '"' . $c . '"', $nombresArticulos));
 
-// Guardar archivos de debug (puedes eliminar luego)
-file_put_contents('debug_listaConceptos.txt', print_r($listaConceptos, true));
-file_put_contents('debug_listaArticulos.txt', print_r($listaArticulos, true));
 
 $prompt = <<<PROMPT
 Eres un experto analizando tickets de gasto con el objetivo de identificar los siguientes 3 campos:
