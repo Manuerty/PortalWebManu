@@ -113,7 +113,7 @@ Eres un experto analizando tickets de gasto con el objetivo de identificar los s
 4. Artículo de gasto
 5. Descripcion del gasto
 
-Para la descripción del gasto, debes elegir la mejor palabra o palabras (con un maximo de 4, pero cuantas menos mejor) que describa el gasto total del ticket.
+Para la descripción del gasto, debes elegir la mejor palabra  que describa el gasto total del ticket.
 
 Para el campo "Tipo de Artículo", debes elegir el concepto más adecuado exclusivamente de la siguiente lista:
 
@@ -176,7 +176,9 @@ if (curl_errno($ch)) {
 
     $parsedJson = json_decode($limpio, true);
 
-    if (json_last_error() === JSON_ERROR_NONE) {
+        if (json_last_error() === JSON_ERROR_NONE) {
+        $parsedJson["Lista Articulos"] = $nombresArticulos;
+        $parsedJson["Lista Conceptos"] = $nombresConceptos;
         echo json_encode($parsedJson);
         exit;
     } else {

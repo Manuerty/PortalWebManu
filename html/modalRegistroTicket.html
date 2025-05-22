@@ -12,9 +12,37 @@
 
       <div class="modal-body">
         <form>
+          
+          <div class="mb-3 col-12 col-md-10 offset-md-1 input-group-lg"><label for="IdProyectoTarea" class="form-label">Fase</label><div class="selectBuscar">
+            <input type="text" id="SelectBuscar-InputFinal" class="selectBuscar-input" placeholder="Buscar..." onfocus="showOptions2()" oninput="filterOptions2()">
+                <div class="selectBuscar-list" id="optionsList2" style="display: none;">
+                    <div class="selectBuscar-item2" data-value="" style="display: block;"></div>
+                    <div class="selectBuscar-item2" data-value="3096" style="display: block;">SEGUIMIENTO</div>
+                </div>
+          </div>
+
           <div class="form-group">
-            <label for="fechaTicket">Fecha</label>
-            <input type="date" class="form-control" id="fechaTicket" />
+            <label for="conceptoTicket">Tipo de Artículo</label>
+            <select class="form-control" id="conceptoTicket">
+              <option value="">Seleccione...</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="articuloGasto">Artículo de gasto</label>
+            <select class="form-control" id="articuloGasto">
+              <option value="">Seleccione...</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="descripcionGasto">Descripción del gasto</label>
+            <input type="text" class="form-control" id="descripcionGasto" />
+          </div>
+
+          <div class="form-group">
+            <label for="cantidad">Cantidad</label>
+            <input type="number" class="form-control" id="cantidad" min="1" value="1" />
           </div>
 
           <div class="form-group">
@@ -23,10 +51,8 @@
           </div>
 
           <div class="form-group">
-            <label for="conceptoTicket">Concepto</label>
-            <select class="form-control" id="conceptoTicket">
-              <option value="">Seleccione...</option>
-            </select>
+            <label for="fechaTicket">Fecha</label>
+            <input type="date" class="form-control" id="fechaTicket" />
           </div>
 
           <div class="form-group">

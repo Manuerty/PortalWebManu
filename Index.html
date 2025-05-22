@@ -1000,24 +1000,54 @@ function llenarOpcionesConcepto() {
     });
 }
 
+function llenarOpcionesArticulo(listaArticulos, valorSeleccionado = "") {
+    const select = document.getElementById('articuloGasto');
+    if (!select) return;
+
+    select.innerHTML = ""; // Limpiar opciones
+
+    const defaultOption = document.createElement('option');
+    defaultOption.value = "";
+    defaultOption.textContent = "Seleccione...";
+    select.appendChild(defaultOption);
+
+    listaArticulos.forEach(nombre => {
+        const opcion = document.createElement('option');
+        opcion.value = nombre;
+        opcion.textContent = nombre;
+        if (nombre === valorSeleccionado) {
+            opcion.selected = true;
+        }
+        select.appendChild(opcion);
+    });
+}
+
 function abrirModalRegistroTicketConDatos(data) {
     // Primero cargar los conceptos dinámicamente y luego abrir el modal
-    procesarComboBox(function() {
-        // Ahora que 'conceptos' está cargado, puedes llenar el combo y abrir modal
+    procesarComboBox(function () {
         $('#modalContainer').load('html/modalRegistroTicket.html', function () {
             const $modal = $('#modalRegistroTicket');
 
-            llenarOpcionesConcepto();
+            // Establecer conceptos globales antes de llenar opciones
+            window.conceptos = data["Lista Conceptos"]?.map(nombre => ({
+                Nombre: nombre,
+                IdProyectoMaterialTipo: nombre
+            })) || [];
 
+            // Mostrar el modal
             $modal.modal({
                 backdrop: 'static',
                 keyboard: false
             }).modal('show');
 
-            // Extraer datos del JSON
+            // Llenar conceptos después de mostrar el modal (asegurarse que select exista)
+            llenarOpcionesConcepto();
+
             const fechaRaw = data["Fecha Ticket"];
             const importeRaw = data["Importe Ticket"];
-            const conceptoRaw = data["Concepto Ticket"];
+            const conceptoRaw = data["Tipo de Artículo"];
+            const articuloRaw = data["Artículo de gasto"];
+            const descripcionRaw = data["Descripción"];
 
             if (fechaRaw) {
                 const parts = fechaRaw.split('/');
@@ -1033,9 +1063,19 @@ function abrirModalRegistroTicketConDatos(data) {
 
             if (conceptoRaw) {
                 const select = document.getElementById('conceptoTicket');
-                if ([...select.options].some(opt => opt.value === conceptoRaw)) {
-                    $modal.find('#conceptoTicket').val(conceptoRaw);
+                const opcionEncontrada = [...select.options].find(opt => opt.textContent === conceptoRaw);
+                if (opcionEncontrada) {
+                    $modal.find('#conceptoTicket').val(opcionEncontrada.value);
                 }
+            }
+
+            const listaArticulos = Array.isArray(data["Lista Articulos"]) ? data["Lista Articulos"] : [];
+            console.log("Lista Articulos recibida:", listaArticulos);
+
+            llenarOpcionesArticulo(listaArticulos, articuloRaw);
+
+            if (descripcionRaw) {
+                $modal.find('#descripcionGasto').val(descripcionRaw);
             }
 
             $modal.find('#jsonProcesado').val(JSON.stringify(data, null, 2));
@@ -1098,38 +1138,70 @@ function abrirModalRegistroTicketConDatos(data) {
         btnsv.setAttribute("onclick","guardarFirma("+Id+","+TipoF+","+IdP+","+IdTp+","+IdS+",'"+IPc+"','"+BBDD+"')");
     }
 
+    function showOptions2() {
+        document.getElementById("optionsList2").style.display = "block";
+        anadirEventosSelectBuscar2();
+    }
+
+    function filterOptions2() {
+        const input = document.querySelector(".selectBuscar-input2").value.toLowerCase();
+        const options = document.querySelectorAll(".selectBuscar-item2");
+
+        options.forEach(option => {
+            const text = option.textContent.toLowerCase();
+            option.style.display = text.includes(input) ? "block" : "none";
+        });
+    }
+
+    function anadirEventosSelectBuscar2(){
+        document.addEventListener("click", function(event) {
+            const dropdown = document.querySelector(".selectBuscar2");
+            if (dropdown && !dropdown.contains(event.target)) {
+            document.getElementById("optionsList2").style.display = "none";
+            }
+        });
+        document.querySelectorAll(".selectBuscar-item2").forEach(option => {
+            option.addEventListener("click", function() {
+                document.querySelector(".selectBuscar-input2").value = option.textContent;
+                document.querySelector(".selectBuscar-input2").setAttribute("data-value", option.getAttribute("data-value"));
+                document.getElementById("optionsList2").style.display = "none";
+            });
+        });
+    
+    }
+
     //ModalBuscar
     function showOptions() {
         document.getElementById("optionsList").style.display = "block";
         anadirEventosSelectBuscar();
     }
 
-  function filterOptions() {
-    const input = document.querySelector(".selectBuscar-input").value.toLowerCase();
-    const options = document.querySelectorAll(".selectBuscar-item");
+    function filterOptions() {
+        const input = document.querySelector(".selectBuscar-input").value.toLowerCase();
+        const options = document.querySelectorAll(".selectBuscar-item");
 
-    options.forEach(option => {
-      const text = option.textContent.toLowerCase();
-      option.style.display = text.includes(input) ? "block" : "none";
-    });
-  }
- function anadirEventosSelectBuscar(){
-    document.addEventListener("click", function(event) {
-    const dropdown = document.querySelector(".selectBuscar");
-    if (dropdown && !dropdown.contains(event.target)) {
-      document.getElementById("optionsList").style.display = "none";
+        options.forEach(option => {
+            const text = option.textContent.toLowerCase();
+            option.style.display = text.includes(input) ? "block" : "none";
+        });
     }
-  });
 
-  document.querySelectorAll(".selectBuscar-item").forEach(option => {
-    option.addEventListener("click", function() {
-      document.querySelector(".selectBuscar-input").value = option.textContent;
-      document.querySelector(".selectBuscar-input").setAttribute("data-value", option.getAttribute("data-value"));
-      document.getElementById("optionsList").style.display = "none";
-    });
-  });
- 
- }
+    function anadirEventosSelectBuscar(){
+        document.addEventListener("click", function(event) {
+            const dropdown = document.querySelector(".selectBuscar");
+            if (dropdown && !dropdown.contains(event.target)) {
+            document.getElementById("optionsList").style.display = "none";
+            }
+        });
+        document.querySelectorAll(".selectBuscar-item").forEach(option => {
+            option.addEventListener("click", function() {
+                document.querySelector(".selectBuscar-input").value = option.textContent;
+                document.querySelector(".selectBuscar-input").setAttribute("data-value", option.getAttribute("data-value"));
+                document.getElementById("optionsList").style.display = "none";
+            });
+        });
+    
+    }
   
 
     function toggleContentPorId(contentId) {
