@@ -63,6 +63,8 @@
     <!-- librerias de los graficos/chars -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-load-image/5.16.0/load-image.all.min.js"></script>
+
 
     <!-- link de css -->
     <link rel="stylesheet" href="css/header.css">
@@ -447,7 +449,7 @@ async function dibuja_pagina(arrayDatos = []) {
         dibuja_pagina(valArray);
     })
     
-    function SubmitModalForm(tipoApp = 0,IdRegisto = null,claseFormulario = null,nombreForm = null ){
+    function SubmitModalForm2(tipoApp = 0,IdRegisto = null,claseFormulario = null,nombreForm = null ){
         
         event.preventDefault();
         let campoRequeridoVacio = 0;
@@ -578,6 +580,148 @@ async function dibuja_pagina(arrayDatos = []) {
         }
         
         
+    }
+
+
+
+    // ==== Funciones auxiliares necesarias ====
+
+    function loadImage(src) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => resolve(img);
+            img.onerror = reject;
+            img.src = src;
+        });
+    }
+
+    function resizeImage(img, maxSide = 900, mimeType = 'image/jpeg') {
+        return new Promise((resolve) => {
+            const ratio = img.width / img.height;
+            let newWidth, newHeight;
+
+            if (ratio > 1) {
+                newWidth = maxSide;
+                newHeight = Math.round(maxSide / ratio);
+            } else {
+                newHeight = maxSide;
+                newWidth = Math.round(maxSide * ratio);
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = newWidth;
+            canvas.height = newHeight;
+            const ctx = canvas.getContext('2d');
+
+            ctx.fillStyle = 'white'; // fondo blanco para JPG
+            ctx.fillRect(0, 0, newWidth, newHeight);
+            ctx.drawImage(img, 0, 0, newWidth, newHeight);
+
+            canvas.toBlob((blob) => {
+                resolve({ blob, width: newWidth, height: newHeight });
+            }, mimeType, 0.8);
+        });
+    }
+
+    // ==== Lógica principal separada ====
+
+    function SubmitModalForm(tipoApp = 0, IdRegisto = null, claseFormulario = null, nombreForm = null) {
+        if (event) event.preventDefault();
+
+        const inputArchivo = $(".formulario_modal :file")[0];
+
+        if (!inputArchivo || inputArchivo.files.length === 0 || IdRegisto !== null) {
+            return;
+        }
+
+        const archivo = inputArchivo.files[0];
+        const tamanioMaximo = 4 * 1024 * 1024;
+
+        if (archivo.size >= tamanioMaximo) {
+            console.log("Archivo grande, será comprimido");
+            comprimirYEnviarArchivo(archivo, tamanioMaximo, tipoApp, claseFormulario);
+        } else {
+            console.log("Archivo dentro del límite, se envía directamente");
+            continuarConEnvio(archivo, tipoApp, claseFormulario, archivo.name);
+        }
+    }
+
+    function comprimirYEnviarArchivo(archivo, tamanioMaximo, tipoApp, claseFormulario) {
+        const originalURL = URL.createObjectURL(archivo);
+
+        loadImage(originalURL).then((originalImg) => {
+            resizeImage(originalImg, 900, 'image/jpeg').then(({ blob }) => {
+                if (blob.size >= tamanioMaximo) {
+                    alert("Incluso comprimido, el archivo supera los 4MB. Redúcelo manualmente.");
+                    return;
+                }
+
+                const archivoComprimido = new File(
+                    [blob],
+                    archivo.name.replace(/\.[^/.]+$/, ".jpg"),
+                    { type: 'image/jpeg' }
+                );
+
+                console.log("Archivo comprimido, se procede a enviar");
+                continuarConEnvio(archivoComprimido, tipoApp, claseFormulario, archivo.name);
+            });
+        });
+    }
+
+    function continuarConEnvio(archivo, tipoApp, claseFormulario, nombreArchivo) {
+        const formData = new FormData();
+        formData.append('Archivo', archivo);
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'php/GestionSubidaArchivos.php', true);
+
+        xhr.onload = function () {
+            if (xhr.status !== 200) {
+                console.error('Error al subir el archivo.');
+                return;
+            }
+
+            const respuesta = xhr.responseText;
+
+            if (respuesta == 0) {
+                alert("Error 0x80072f8f - 0x20000: Fallo al subir el archivo al servidor");
+                return;
+            } else if (respuesta == 1) {
+                alert("El tamaño máximo del archivo no puede superar los 4 MB");
+                return;
+            }
+
+            const IdAT = $("#TipoArchivo").val();
+            let arrayValAdicional = [];
+            let RutaArchivo = '';
+
+            if (tipoApp == 0) {
+                arrayValAdicional = {
+                    'Archivo': respuesta,
+                    'Nombre': nombreArchivo,
+                    'IdAT': IdAT
+                };
+            } else {
+                $(".formulario_modal :input").each(function () {
+                    if ($(this).prop("type") !== "file") {
+                        arrayValAdicional.push($(this).val());
+                    }
+                });
+                RutaArchivo = respuesta;
+            }
+
+            $('#SubmitModalForm').modal('hide');
+            $('.modal-backdrop').hide();
+            $('body').css({ 'overflow': 'auto', 'padding-right': '0' });
+
+            if (claseFormulario) {
+                dibuja_pagina([0, 3.5, arrayValAdicional, RutaArchivo, nombreArchivo]);
+            } else {
+                dibuja_pagina([0, 3, arrayValAdicional, RutaArchivo, nombreArchivo]);
+            }
+        };
+
+        xhr.send(formData);
     }
 
     function SubmitFormularioCambioDatos(){
