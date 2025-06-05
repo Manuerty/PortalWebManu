@@ -625,24 +625,65 @@ async function dibuja_pagina(arrayDatos = []) {
 
     // ==== Lógica principal separada ====
 
-    function SubmitModalForm(tipoApp = 0, IdRegisto = null, claseFormulario = null, nombreForm = null) {
+    function SubmitModalForm(tipoApp = 0, IdRegisto = null, claseFormulario = null, nombreForm = 'SubmitModalForm') {
         if (event) event.preventDefault();
 
+        let campoRequeridoVacio = 0;
+        let valArray = [];
         const inputArchivo = $(".formulario_modal :file")[0];
+        const tieneArchivo = inputArchivo && inputArchivo.files.length > 0;
 
-        if (!inputArchivo || inputArchivo.files.length === 0 || IdRegisto !== null) {
-            return;
-        }
+        if (tieneArchivo && IdRegisto === null) {
+            const archivo = inputArchivo.files[0];
+            const tamanioMaximo = 4 * 1024 * 1024;
 
-        const archivo = inputArchivo.files[0];
-        const tamanioMaximo = 4 * 1024 * 1024;
-
-        if (archivo.size >= tamanioMaximo) {
-            console.log("Archivo grande, será comprimido");
-            comprimirYEnviarArchivo(archivo, tamanioMaximo, tipoApp, claseFormulario);
+            if (archivo.size >= tamanioMaximo) {
+                console.log("Archivo grande, será comprimido");
+                comprimirYEnviarArchivo(archivo, tamanioMaximo, tipoApp, claseFormulario);
+            } else {
+                console.log("Archivo dentro del límite, se envía directamente");
+                continuarConEnvio(archivo, tipoApp, claseFormulario, archivo.name);
+            }
         } else {
-            console.log("Archivo dentro del límite, se envía directamente");
-            continuarConEnvio(archivo, tipoApp, claseFormulario, archivo.name);
+            // Validación de campos
+            if (IdRegisto !== null) {
+                valArray.push(claseFormulario, IdRegisto);
+            }
+
+            $(".formulario_modal:visible :input").each(function () {
+                const idInput = $(this).prop('id');
+                const classComprobacion = '#' + idInput + '_condiciones';
+                let comprobacion = $(classComprobacion).text() || 'true';
+
+                if ($(this).prop('required') && (!$(this).val() || !eval(comprobacion)) && $(this).closest('form').is(':visible')) {
+                    $(this).addClass("border-danger");
+                    $('#' + idInput + '_msgError').removeClass('d-none');
+                    campoRequeridoVacio = 1;
+                } else {
+                    $(this).removeClass("border-danger");
+                    $('#' + idInput + '_msgError').addClass('d-none');
+                }
+
+                if ($(this).hasClass('selectBuscar-input')) {
+                    valArray.push($(this).attr('data-value'));
+                } else if ($(this).prop("type") !== "file") {
+                    valArray.push($(this).val());
+                }
+            });
+
+            $('body').css({ 'overflow': 'auto', 'padding-right': '0' });
+            $('#' + nombreForm).modal('hide');
+            $('.modal-backdrop').hide();
+
+            if (campoRequeridoVacio === 1) {
+                alert("Complete todos los campos");
+            } else {
+                if (claseFormulario) {
+                    dibuja_pagina([0, 3.5, valArray, '', '']);
+                } else {
+                    dibuja_pagina([0, 3, valArray]);
+                }
+            }
         }
     }
 
