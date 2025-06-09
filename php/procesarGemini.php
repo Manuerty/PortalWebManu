@@ -172,9 +172,37 @@ if (curl_errno($ch)) {
 
     $parsedJson = json_decode($limpio, true);
 
-        if (json_last_error() === JSON_ERROR_NONE) {
-        $parsedJson["Lista Articulos"] = $nombresArticulos;
-        $parsedJson["Lista Conceptos"] = $nombresConceptos;
+    if (json_last_error() === JSON_ERROR_NONE) {
+        // Buscar índice (ID) del concepto (Tipo de Artículo)
+        $tipoArticuloTexto = $parsedJson["Tipo de Artículo"] ?? '';
+        $idTipoArticulo = array_search($tipoArticuloTexto, array_values($nombresConceptos));
+        if ($idTipoArticulo === false) $idTipoArticulo = 0;
+        $idTipoArticulo += 1;
+
+        // Buscar índice (ID) del artículo (Artículo de gasto)
+        $articuloGastoTexto = $parsedJson["Artículo de gasto"] ?? '';
+        $idArticuloGasto = 0;
+
+        foreach ($_SESSION["Controlador"]->miEstado->datosProyectos[3] as $articulo) {
+            if (
+                (is_array($articulo) && isset($articulo['Descripcion']) && $articulo['Descripcion'] === $articuloGastoTexto)
+            ) {
+                $idArticuloGasto = $articulo['idArticulo'];
+                break;
+            }
+        }
+
+        if ($idArticuloGasto == 0) {
+            // Si no se encuentra, asignar el ID por defecto
+            $idArticuloGasto = 6065; // Asignar un ID por defecto si no se encuentra
+        }
+        // Reemplazar el texto por el ID (como string)
+        $parsedJson["Tipo de Artículo"] = (string)$idTipoArticulo;
+        $parsedJson["Artículo de gasto"] = (string)$idArticuloGasto;
+        // Añadir listas para el cliente si las necesita
+        $parsedJson["Lista Articulos"] = array_values($nombresArticulos);
+        $parsedJson["Lista Conceptos"] = array_values($nombresConceptos);
+
         echo json_encode($parsedJson);
         exit;
     } else {

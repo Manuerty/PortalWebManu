@@ -1132,150 +1132,36 @@ function procesarInformacionAsistenteIa() {
     });
 }
 
-let conceptos = [];
-
-function procesarComboBox(callback) {
-    $.ajax({
-        type: 'POST',
-        url: 'php/ComboBox.php',
-        data: { Accion: 0 },
-        dataType: 'json',
-        success: function(response) {
-            conceptos = response;
-            console.log("Conceptos recibidos:", conceptos);
-
-            let select = $('#SelectBuscar-InputFinal');
-            select.empty();
-            conceptos.forEach(function(item) {
-                select.append(`<option value="${item.IdProyectoMaterialTipo}">${item.Nombre}</option>`);
-            });
-
-            select.removeClass('d-none');
-            select.focus();
-            select.selectpicker('refresh');
-
-            if (typeof callback === "function") callback();
-        },
-        error: function(error) {
-            console.error('Error al cargar el ComboBox:', error.responseText || error.statusText || error);
-        }
-    });
-}
-
-
-function llenarOpcionesConcepto() {
-    const select = document.getElementById('conceptoTicket');
-    if (!select) return;
-
-    select.innerHTML = ""; // Limpiar opciones actuales
-
-    // Agregar opción por defecto
-    const opcionDefault = document.createElement('option');
-    opcionDefault.value = "";
-    opcionDefault.textContent = "Seleccione...";
-    select.appendChild(opcionDefault);
-
-    console.log("Conceptos a agregar:", conceptos);
-
-    // Agregar opciones desde el array
-    conceptos.forEach(item => {
-        const opcion = document.createElement('option');
-        opcion.value = item.IdProyectoMaterialTipo;   // <- aquí accedemos a la propiedad
-        opcion.textContent = item.Nombre;             // <- aquí también
-        select.appendChild(opcion);
-    });
-}
-
-function llenarOpcionesArticulo(listaArticulos, valorSeleccionado = "") {
-    const select = document.getElementById('articuloGasto');
-    if (!select) return;
-
-    select.innerHTML = ""; // Limpiar opciones
-
-    const defaultOption = document.createElement('option');
-    defaultOption.value = "";
-    defaultOption.textContent = "Seleccione...";
-    select.appendChild(defaultOption);
-
-    listaArticulos.forEach(nombre => {
-        const opcion = document.createElement('option');
-        opcion.value = nombre;
-        opcion.textContent = nombre;
-        if (nombre === valorSeleccionado) {
-            opcion.selected = true;
-        }
-        select.appendChild(opcion);
-    });
-}
 
 function abrirModalRegistroTicketConDatos(data) {
-    // Primero cargar los conceptos dinámicamente y luego abrir el modal
-    procesarComboBox(function () {
-        $('#modalContainer').load('html/modalRegistroTicket.html', function () {
-            const $modal = $('#modalRegistroTicket');
+    const fechaTicket = data["Fecha Ticket"] || "1970-01-01 01:00:00";
+    const importeTicket = data["Importe Ticket"] || "0.00";
+    const tipoArticulo = data["Tipo de Artículo"] || "0";  // ya viene como ID
+    const articuloGasto = data["Artículo de gasto"] || "0";  // ya viene como ID
+    const descripcion = data["Descripción"] || "";
+    const cantidad = "1";
 
-            // Establecer conceptos globales antes de llenar opciones
-            window.conceptos = data["Lista Conceptos"]?.map(nombre => ({
-                Nombre: nombre,
-                IdProyectoMaterialTipo: nombre
-            })) || [];
+    let fechaISO = "1970-01-01T01:00";
+    const partesFecha = fechaTicket.split('/');
+    if (partesFecha.length === 3) {
+        const [dd, mm, yyyy] = partesFecha;
+        fechaISO = `${yyyy}-${mm.padStart(2, '0')}-${dd.padStart(2, '0')}T01:00`;
+    }
 
-            // Mostrar el modal
-            $modal.modal({
-                backdrop: 'static',
-                keyboard: false
-            }).modal('show');
+    const valores = [
+        "3164",              // Posición 0 (ID Proyecto u otro fijo)
+        tipoArticulo,        // Posición 1: ID del concepto
+        articuloGasto,              // Posición 2 (otra constante o valor fijo)
+        descripcion,         // Posición 3
+           cantidad,   // Posición 4: ID del artículo
+        importeTicket,       // Posición 5
+        fechaISO             // Posición 6
+    ];
 
-            // Llenar conceptos después de mostrar el modal (asegurarse que select exista)
-            llenarOpcionesConcepto();
+    console.log("Valores a enviar al modal:", valores);
 
-            const fechaRaw = data["Fecha Ticket"];
-            const importeRaw = data["Importe Ticket"];
-            const conceptoRaw = data["Tipo de Artículo"];
-            const articuloRaw = data["Artículo de gasto"];
-            const descripcionRaw = data["Descripción"];
-
-            if (fechaRaw) {
-                const parts = fechaRaw.split('/');
-                if (parts.length === 3) {
-                    const fechaISO = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
-                    $modal.find('#fechaTicket').val(fechaISO);
-                }
-            }
-
-            if (importeRaw) {
-                $modal.find('#importeTicket').val(parseFloat(importeRaw).toFixed(2));
-            }
-
-            if (conceptoRaw) {
-                const select = document.getElementById('conceptoTicket');
-                const opcionEncontrada = [...select.options].find(opt => opt.textContent === conceptoRaw);
-                if (opcionEncontrada) {
-                    $modal.find('#conceptoTicket').val(opcionEncontrada.value);
-                }
-            }
-
-            const listaArticulos = Array.isArray(data["Lista Articulos"]) ? data["Lista Articulos"] : [];
-            console.log("Lista Articulos recibida:", listaArticulos);
-
-            llenarOpcionesArticulo(listaArticulos, articuloRaw);
-
-            if (descripcionRaw) {
-                $modal.find('#descripcionGasto').val(descripcionRaw);
-            }
-
-            $modal.find('#jsonProcesado').val(JSON.stringify(data, null, 2));
-            window.datosTicketProcesado = data;
-        });
-    });
+    cargarModalFormularioDinamico('modalFormularioMaterialesProyectos', null, valores);
 }
-
-
-
-
-
-
-
 
 
     // funcion auxliar para poder asignar valores dinamicamente al select buscar  
