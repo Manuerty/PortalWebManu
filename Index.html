@@ -635,7 +635,8 @@ async function dibuja_pagina(arrayDatos = []) {
 
         if (tieneArchivo && IdRegisto === null) {
             const archivo = inputArchivo.files[0];
-            const tamanioMaximo = 4 * 1024 * 1024;
+            // const tamanioMaximo = 4 * 1024 * 1024;
+            const tamanioMaximo = 1024 * 1024;
 
             if (archivo.size >= tamanioMaximo) {
                 console.log("Archivo grande, será comprimido");
