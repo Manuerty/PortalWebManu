@@ -535,4 +535,5 @@ Error [8192] en C:\xampp\htdocs\PortalWebManu\php\index.php:12: Creation of dyna
 [2025-06-09 09:19:14] -> Error [2] en C:\xampp\htdocs\PortalWebManu\php\Clases\controlador.php:883: Undefined array key "descripcion" -> Error [2] en C:\xampp\htdocs\PortalWebManu\php\pinta.php:355: Undefined variable $ModalFirma
 [2025-06-09 09:19:14] -> Error [2] en C:\xampp\htdocs\PortalWebManu\php\pinta.php:355: Undefined variable $ModalFirma -> Error [8192] en C:\xampp\htdocs\PortalWebManu\php\index.php:12: Creation of dynamic property Estado::$adjuntarDocumentoFormAutomatico is deprecated
 [2025-06-09 09:19:29] -> Error [8192] en C:\xampp\htdocs\PortalWebManu\php\index.php:12: Creation of dynamic property Estado::$adjuntarDocumentoFormAutomatico is deprecated -> Error [2] en C:\xampp\htdocs\PortalWebManu\php\pinta.php:355: Undefined variable $ModalFirma
-[2025-06-09 09:19:33] -> Error [2] en C:\xampp\htdocs\PortalWebManu\php\pinta.php:355: Undefined variable $ModalFirma -> 
+[2025-06-09 09:19:33] -> Error [2] en C:\xampp\htdocs\PortalWebManu\php\pinta.php:355: Undefined variable $ModalFirma -> Error [2] en C:\xampp\htdocs\PortalWebManu\php\pinta.php:243: Undefined array key "accionBuscarMenu"
+[2025-06-09 09:31:20] -> Error [2] en C:\xampp\htdocs\PortalWebManu\php\pinta.php:243: Undefined array key "accionBuscarMenu" -> 

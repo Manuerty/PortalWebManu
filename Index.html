@@ -449,7 +449,7 @@ async function dibuja_pagina(arrayDatos = []) {
         dibuja_pagina(valArray);
     })
     
-    function SubmitModalForm2(tipoApp = 0,IdRegisto = null,claseFormulario = null,nombreForm = null ){
+    function SubmitModalForm(tipoApp = 0,IdRegisto = null,claseFormulario = null,nombreForm = null ){
         
         event.preventDefault();
         let campoRequeridoVacio = 0;
@@ -625,7 +625,7 @@ async function dibuja_pagina(arrayDatos = []) {
 
     // ==== Lógica principal separada ====
 
-    function SubmitModalForm(tipoApp = 0, IdRegisto = null, claseFormulario = null, nombreForm = 'SubmitModalForm') {
+    function SubmitModalForm2(tipoApp = 0, IdRegisto = null, claseFormulario = null, nombreForm = 'SubmitModalForm') {
         if (event) event.preventDefault();
 
         let campoRequeridoVacio = 0;

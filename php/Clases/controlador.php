@@ -465,7 +465,7 @@ class Controlador
         $url2 = "http://onixsw.esquio.es:8080/Funciones.aspx?SubirArchivo=1&pin=".$pin.
         "&IdTipoPropietario=".$IdtipoPropietario.'&IdPropietario='.$idPropietario.
         '&IdArchivoTipo='.$idArchivoTipo.'&URL='.urlencode($url).'&NombreArchivo='.$nombre_archivo;
-       
+       var_dump($url2);
         try {
             $response = file_get_contents($url2);
         } catch (\Throwable $th) {
@@ -502,6 +502,7 @@ class Controlador
             $rutaGuardado = $directorio_destino.$nombre_archivo; // Reemplaza esto con la ruta y nombre deseado
         
             // Guarda el contenido en un archivo en el servidor
+            //var_dump($directorio_destino);
             if (file_put_contents($rutaGuardado, $response) !== false) {
                 //$abrirNuebaPestaña = 1;
                 return array('php/'.$rutaGuardado,1,1);
@@ -1117,6 +1118,7 @@ class Controlador
         //********************************************/
         //PORTAL EMPLEADO Insertar Formularios dinamcos
         //********************************************/ 
+            //var_dump($arrayDatos[4]);
             if( $this -> miEstado -> Estado == 4.4 ){
                 $subida = $this -> subirArchivosServicioWeb($_SESSION["pinC"],
                                                 $this -> miEstado -> IdTipoPropietario,
@@ -1186,7 +1188,7 @@ class Controlador
         //********************************************/
         //PORTAL EMPLEADO adjuntar archivo desde la pestaña que no es archivos (mierdas varias)
         //********************************************/
-      
+            
             $nombre_archivo = str_replace([' ', '/'] ,['_','_'] ,$arrayDatos[4]);
             $subida = $this -> subirArchivosServicioWeb($_SESSION["pinC"],
                                             $this -> miEstado -> IdTipoPropietario,

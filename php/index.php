@@ -3,8 +3,8 @@
 //Asignar la faltaq de valores como error fatal en vez de como warming
 set_error_handler(function($errno, $errstr, $errfile, $errline) {
     $error_message = "Error [$errno] en $errfile:$errline: $errstr";
-    file_put_contents('errores.txt', $error_message . "\n", FILE_APPEND);
-    file_put_contents('errores.txt', '['.date('Y-m-d H:i:s').']' . ' -> ' . $error_message . ' -> ', FILE_APPEND);
+/*     file_put_contents('errores.txt', $error_message . "\n", FILE_APPEND);
+    file_put_contents('errores.txt', '['.date('Y-m-d H:i:s').']' . ' -> ' . $error_message . ' -> ', FILE_APPEND); */
 });
 
 require_once "Clases/controlador.php";
