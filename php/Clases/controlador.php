@@ -1118,7 +1118,7 @@ class Controlador
         //PORTAL EMPLEADO Insertar Formularios dinamcos
         //********************************************/ 
             if( $this -> miEstado -> Estado == 4.4 ){
-                var_dump($arrayDatos[4]);
+                //var_dump($arrayDatos[4]);
                 $subida = $this -> subirArchivosServicioWeb($_SESSION["pinC"],
                                                 $this -> miEstado -> IdTipoPropietario,
                                                 $this -> miEstado -> IdPropietario,
