@@ -1,8 +1,8 @@
 <?php
 session_start();
 if(isset($_FILES["Archivo"])){
-    //$tamanoMaximoArchivo =  4* 1024 * 1024;
-    $tamanoMaximoArchivo =  1024 * 1024;
+    $tamanoMaximoArchivo =  4 * 1024 * 1024;
+    //$tamanoMaximoArchivo =  1024 * 1024;
 
     //Comprobaciones de seguridad del tipo de archivo
     $finfo = finfo_open(FILEINFO_MIME_TYPE);
