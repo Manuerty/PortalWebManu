@@ -1224,7 +1224,7 @@ class Controlador
         //********************************************/
         //PORTAL EMPLEADO adjuntar archivo desde la pestaña que no es archivos (mierdas varias)
         //********************************************/
-            var_dump($arrayDatos);
+            var_dump($arrayDatos[3]);
             $nombre_archivo = str_replace([' ', '/'] ,['_','_'] ,$arrayDatos[4]);
             $subida = $this -> subirArchivosServicioWeb($_SESSION["pinC"],
                                             $this -> miEstado -> IdTipoPropietario,
