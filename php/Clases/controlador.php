@@ -1095,8 +1095,35 @@ class Controlador
             $tipoMat = 1;
             if($c == 6.1){
                 $tipoMat = 0;
-            }else{
-                $this -> miEstado -> adjuntarDocumentoFormAutomatico = 1;
+            }
+            elseif ($c == 6.2 && $this->miEstado->archivoAdjuntoTemporal != null) {
+                $archivoTemp = $this->miEstado->archivoAdjuntoTemporal; 
+                $this->miEstado->archivoAdjuntoTemporal = null;
+
+                $nombreArchivo = $archivoTemp['nombre'];
+                $tipoMime = $archivoTemp['tipo'];
+                $contenidoBase64 = $archivoTemp['contenido'];
+
+                $rutaTemporal = __DIR__ . "/tmp/" . uniqid() . "_" . $nombreArchivo;
+                file_put_contents($rutaTemporal, base64_decode($contenidoBase64));
+
+                $subida = $this->subirArchivosServicioWeb(
+                    $_SESSION["pinC"],
+                    $this->miEstado->IdTipoPropietario,
+                    $this->miEstado->IdPropietario,
+                    $arrayDatos[2][0], // ID Tipo de archivo
+                    $rutaTemporal,
+                    str_replace([' ', '/'], ['_', '_'], $nombreArchivo)
+                );
+
+                echo $subida ? "Archivo subido correctamente." : "Error al subir el archivo.";
+
+                if (file_exists($rutaTemporal)) {
+                    unlink($rutaTemporal);
+                }
+            }
+            else{
+                $this -> miEstado -> adjuntarDocumentoFormAutomatico = 1 ;
                 $this -> miEstado -> IdTipoPropietario = 149;
                 $accionJs = 3;
             }

@@ -16,6 +16,8 @@ class Estado{
     public $filtrado_estado;
     
     public $nombreDocumentoPadre;
+
+    public $archivoAdjuntoTemporal;
     
 
     //public $documentos = array();

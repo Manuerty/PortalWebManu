@@ -13,13 +13,19 @@ if (!isset($_FILES['archivo'])) {
 
 $filePath = $_FILES['archivo']['tmp_name'];
 $mimeType = mime_content_type($filePath);
-
 if (strpos($mimeType, 'image/') !== 0 && $mimeType !== 'application/pdf') {
     echo json_encode(["error" => "El archivo debe ser una imagen o un PDF válido."]);
     exit;
 }
 
 $fileData = base64_encode(file_get_contents($filePath));
+
+// Guardar archivo en el estado para uso posterior
+$_SESSION["Controlador"]->miEstado->archivoAdjuntoTemporal = [
+    'nombre' => $_FILES['archivo']['name'],
+    'tipo' => $mimeType,
+    'contenido' => $fileData
+];
 
 if (!isset($_SESSION["Controlador"])) {
     echo json_encode(["error" => "No existe 'Controlador' en la sesión."]);
