@@ -1,32 +1,29 @@
-<!-- modalAsistenteIa.html para Bootstrap 4 -->
-<div class="modal fade" id="modalAsistenteIa" tabindex="-1" role="dialog" aria-labelledby="modalAsistenteIaLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
+<!-- modalAsistenteIa.html para Bootstrap 5 -->
+<div class="modal fade" id="modalAsistenteIa" tabindex="-1" aria-labelledby="modalAsistenteIaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-    
+
       <div class="modal-header">
         <h5 class="modal-title" id="modalAsistenteIaLabel">Analizador de Ticket</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
-      
+
       <div class="modal-body">
         <p>Selecciona un ticket para analizarlo</p>
 
         <!-- Input para cargar archivos -->
         <form id="formulario_ticket_gemini" enctype="multipart/form-data">
-          <input type="file" id="archivo" name="archivo" accept="image/*,application/pdf" required class="form-control-file" />
+          <input type="file" id="archivo" name="archivo" accept="image/*,application/pdf" required class="form-control" />
         </form>
 
         <div id="respuesta_ticket_gemini" class="respuesta mt-3"></div>
       </div>
-      
+
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
         <button type="button" class="btn btn-primary" onclick="procesarInformacionAsistenteIa()">Aceptar</button>
       </div>
-      
+
     </div>
   </div>
 </div>
-
