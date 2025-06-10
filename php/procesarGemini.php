@@ -125,7 +125,7 @@ Responde exclusivamente con un JSON válido. No uses bloques de código, ni etiq
 
 Ejemplo del formato esperado:
 {
-  "Fecha Ticket": "dd/mm/yyyy",
+  "Fecha Ticket": "dd-mm-yyyy hh:mm",
   "Importe Ticket": "1000.00",
   "Tipo de Artículo": "Uno de los conceptos anteriores"
   "Artículo de gasto": "Uno de los conceptos anteriores",
@@ -215,4 +215,3 @@ if (curl_errno($ch)) {
     }
 }
 
-curl_close($ch);

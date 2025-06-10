@@ -1134,34 +1134,47 @@ function procesarInformacionAsistenteIa() {
 
 
 function abrirModalRegistroTicketConDatos(data) {
-    const fechaTicket = data["Fecha Ticket"] || "1970-01-01 01:00:00";
+    const fechaTicket = data["Fecha Ticket"] || "01-01-1970 01:00:00";
     const importeTicket = data["Importe Ticket"] || "0.00";
-    const tipoArticulo = data["Tipo de Artículo"] || "0";  // ya viene como ID
-    const articuloGasto = data["Artículo de gasto"] || "0";  // ya viene como ID
+    const tipoArticulo = data["Tipo de Artículo"] || "0";
+    const articuloGasto = data["Artículo de gasto"] || "0";
     const descripcion = data["Descripción"] || "";
     const cantidad = "1";
 
     let fechaISO = "1970-01-01T01:00";
-    const partesFecha = fechaTicket.split('/');
+
+    const [fechaParte, horaParte = "01:00"] = fechaTicket.split(' ');
+    
+    let partesFecha;
+    if (fechaParte.includes('-')) {
+        partesFecha = fechaParte.split('-'); // formato dd-mm-yyyy
+    } else if (fechaParte.includes('/')) {
+        partesFecha = fechaParte.split('/'); // formato dd/mm/yyyy
+    } else {
+        partesFecha = [];
+    }
+
     if (partesFecha.length === 3) {
         const [dd, mm, yyyy] = partesFecha;
-        fechaISO = `${yyyy}-${mm.padStart(2, '0')}-${dd.padStart(2, '0')}T01:00`;
+        const [hh = "01", min = "00"] = horaParte.split(':');
+        fechaISO = `${yyyy}-${mm.padStart(2, '0')}-${dd.padStart(2, '0')}T${hh.padStart(2, '0')}:${min.padStart(2, '0')}`;
     }
 
     const valores = [
-        "3164",              // Posición 0 (ID Proyecto u otro fijo)
-        tipoArticulo,        // Posición 1: ID del concepto
-        articuloGasto,              // Posición 2 (otra constante o valor fijo)
-        descripcion,         // Posición 3
-           cantidad,   // Posición 4: ID del artículo
-        importeTicket,       // Posición 5
-        fechaISO             // Posición 6
+        "3164",             // ID Proyecto (o fijo)
+        tipoArticulo,       // ID concepto
+        articuloGasto,      // ID gasto
+        descripcion,        // Descripción
+        cantidad,           // Cantidad
+        importeTicket,      // Importe
+        fechaISO            // Fecha ISO
     ];
 
     console.log("Valores a enviar al modal:", valores);
 
     cargarModalFormularioDinamico('modalFormularioMaterialesProyectos', null, valores);
 }
+
 
 
     // funcion auxliar para poder asignar valores dinamicamente al select buscar  
