@@ -1136,6 +1136,12 @@ class Controlador
                     $msgError .= $this -> miEstado -> IdTipoPropietario;
                     $msgError .= "-";
                     $msgError .= $resultado;
+                    $msgError .= "-";
+                    $msgError .= $arrayDatos[2][0];
+                    $msgError .= "-";
+                    $msgError .= $archivoTemp;
+                    $msgError .= "-";
+                    $msgError .= $nombre_archivo;
                 }
             }
             $this -> miEstado -> arrayDatosAux = extraerRecursosFaseProyecto($this -> miEstado -> IdPropietario,$tipoMat);
