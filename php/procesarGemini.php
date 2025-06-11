@@ -25,6 +25,7 @@ $fileData = base64_encode(file_get_contents($tmpPath));
 
 // 2. Guardar archivo (ahora sí)
 $archivoRutaGuardada = gestionarSubirArchivo($archivoInfo);
+$nombre_archivo = str_replace([' ', '/'] ,['_','_'] ,$archivoInfo["name"]);
 
 if (!$archivoRutaGuardada) {
     echo json_encode(["error" => "Error al guardar el archivo en el servidor."]);
@@ -32,7 +33,7 @@ if (!$archivoRutaGuardada) {
 }
 
 // 3. Guardar en sesión
-$_SESSION["Controlador"]->miEstado->archivoAdjuntoTemporal = $archivoRutaGuardada;
+$_SESSION["Controlador"]->miEstado->archivoAdjuntoTemporal = [$archivoRutaGuardada, $nombre_archivo];
 
 if (!isset($_SESSION["Controlador"])) {
     echo json_encode(["error" => "No existe 'Controlador' en la sesión."]);

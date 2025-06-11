@@ -1097,10 +1097,18 @@ class Controlador
                 $tipoMat = 0;
             }
             elseif ($c == 6.2 && $this->miEstado->archivoAdjuntoTemporal != null) {
-                $archivoTemp = $this->miEstado->archivoAdjuntoTemporal; 
+                $archivoTemp = $this->miEstado->archivoAdjuntoTemporal[0];
+                $nombre_archivo = $this->miEstado->archivoAdjuntoTemporal[1];
                 $this->miEstado->archivoAdjuntoTemporal = null;
+
+                /* $subida = $this -> subirArchivosServicioWeb($_SESSION["pinC"],
+                                            $this -> miEstado -> IdTipoPropietario,
+                                            $this -> miEstado -> IdPropietarioAuxiliar,
+                                            $arrayDatos[2][0],
+                                            $archivoTemp,
+                                            $nombre_archivo); */
                 
-                var_dump($archivoTemp);
+                var_dump($archivoTemp, $nombre_archivo);
             }
             else{
                 $this -> miEstado -> adjuntarDocumentoFormAutomatico = 1 ;
