@@ -1098,8 +1098,9 @@ class Controlador
             }
             elseif ($c == 6.2 && $this->miEstado->archivoAdjuntoTemporal != null) {
                 $archivoTemp = $this->miEstado->archivoAdjuntoTemporal; 
+                $this->miEstado->archivoAdjuntoTemporal = null;
                 
-                var_dump($archivoTemp);
+                //var_dump($archivoTemp);
             }
             else{
                 $this -> miEstado -> adjuntarDocumentoFormAutomatico = 1 ;
