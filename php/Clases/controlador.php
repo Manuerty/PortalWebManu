@@ -461,17 +461,32 @@ class Controlador
     }
 
     //Subir los archivos mediante llamada al servicio web
-    function subirArchivosServicioWeb($pin,$IdtipoPropietario,$idPropietario,$idArchivoTipo,$url,$nombre_archivo){
-        $url2 = "http://onixsw.esquio.es:8080/Funciones.aspx?SubirArchivo=1&pin=".$pin.
-        "&IdTipoPropietario=".$IdtipoPropietario.'&IdPropietario='.$idPropietario.
-        '&IdArchivoTipo='.$idArchivoTipo.'&URL='.urlencode($url).'&NombreArchivo='.$nombre_archivo;
-        //var_dump($url2);
+    function subirArchivosServicioWeb($pin, $IdtipoPropietario, $idPropietario, $idArchivoTipo, $url, $nombre_archivo) {
+        $url2 = "http://onixsw.esquio.es:8080/Funciones.aspx?SubirArchivo=1&pin=" . $pin .
+            "&IdTipoPropietario=" . $IdtipoPropietario .
+            '&IdPropietario=' . $idPropietario .
+            '&IdArchivoTipo=' . $idArchivoTipo .
+            '&URL=' . urlencode($url) .
+            '&NombreArchivo=' . urlencode($nombre_archivo); // Mejor codificar también esto
+
         try {
             $response = file_get_contents($url2);
+
+            // Puedes descomentar esto para depurar
+            // echo "Respuesta del servidor: " . $response;
+
+            // Si esperas un texto como "OK" o "TRUE", compruébalo:
+            if ($response !== false && stripos($response, 'ok') !== false) {
+                return true;
+            } else {
+                return false;
+            }
+
         } catch (\Throwable $th) {
-            $platano=1; 
+            // Puedes loguear el error si quieres
+            // error_log("Error al subir archivo: " . $th->getMessage());
+            return false;
         }
-        return true;
     }
 
     function descargaArchivoServicoWeb($IdP,$nombre_archivo,$tipoDoc = null,$OI = null){
