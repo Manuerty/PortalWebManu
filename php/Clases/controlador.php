@@ -1119,9 +1119,6 @@ class Controlador
                 $accionJs = 3;
             }
             $resultado = insertProyectosTareaMaterial($c,$arrayDatos[2]);
-            $this -> miEstado -> arrayDatosAux = extraerRecursosFaseProyecto($this -> miEstado -> IdPropietario,$tipoMat);
-            $ultimoElemento = null;
-
             if ($c == 6.2 && $this->miEstado->archivoAdjuntoTemporal != null) {
                 $archivoTemp = $this->miEstado->archivoAdjuntoTemporal[0];
                 $nombre_archivo = $this->miEstado->archivoAdjuntoTemporal[1];
@@ -1141,6 +1138,10 @@ class Controlador
                     $msgError .= $this -> miEstado -> IdPropietario;
                 }
             }
+            $this -> miEstado -> arrayDatosAux = extraerRecursosFaseProyecto($this -> miEstado -> IdPropietario,$tipoMat);
+            $ultimoElemento = null;
+
+            
             
             if($this -> miEstado -> adjuntarDocumentoFormAutomatico == 1 ){
                 foreach (array_reverse($this -> miEstado -> arrayDatosAux) as $item) {
