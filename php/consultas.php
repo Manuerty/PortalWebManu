@@ -1107,7 +1107,6 @@ function insertProyectosTareaMaterial($MaterialProyecto,$arrayDatos){
     $conn = ConexionBD($_SESSION["Controlador"] -> miEstado -> IP, $_SESSION["Controlador"] -> miEstado -> bbdd);
     $sql = "";
     $parm = array();
-    $idProyectoMaterial = 0;
     if($MaterialProyecto == 6.1){
             $sql = " INSERT INTO dbo.PETiemposProyectosAppSheet
         (IdPETiemposProyectosAppSheet,
@@ -1141,39 +1140,33 @@ function insertProyectosTareaMaterial($MaterialProyecto,$arrayDatos){
     }else{
 
         if($arrayDatos[7] == 0 || $arrayDatos[7] == NULL || $arrayDatos[7] == ''){
-            $sql = "
-                    SET NOCOUNT ON;
+            $sql = "DECLARE @FECHA SMALLDATETIME = GETDATE(),
+                    @IdProyectoMaterial INT
+            EXECUTE dbo.up_ProyectosMateriales_Insert
+            @IdProyectoMaterial = @IdProyectoMaterial OUTPUT,
+            @IdProyecto = ?,
+            @IdProyectoTarea = ?,
+            @IdProyectoMaterialTipo = ?, 
+            @IdArticulo = ?, 
+            @Descripcion = ?, 
+            @Cantidad = ?,
+            @Coste = ?,
+            @Fecha =?,
+            @IdPersonal = ?,
+            @IdIdentidad = ?";
 
-                    DECLARE @IdProyectoMaterial INT;
+            
 
-                    EXEC dbo.up_ProyectosMateriales_Insert
-                        @IdProyectoMaterial = @IdProyectoMaterial OUTPUT,
-                        @IdProyecto = ?,
-                        @IdProyectoTarea = ?,
-                        @IdProyectoMaterialTipo = ?,
-                        @IdArticulo = ?,
-                        @Descripcion = ?,
-                        @Cantidad = ?,
-                        @Coste = ?,
-                        @Fecha = ?,
-                        @IdPersonal = ?,
-                        @IdIdentidad = ?;
-
-                    SELECT @IdProyectoMaterial AS IdProyectoMaterial;
-                ";
-
-                $parm = array(
-                    $_SESSION["Controlador"]->miEstado->IdPropietario,   // @IdProyecto
-                    $arrayDatos[0],                                      // @IdProyectoTarea
-                    $arrayDatos[1],                                      // @IdProyectoMaterialTipo
-                    $arrayDatos[2],                                      // @IdArticulo
-                    $arrayDatos[3],                                      // @Descripcion
-                    ConvertirAFloat($arrayDatos[4]),                     // @Cantidad
-                    ConvertirAFloat($arrayDatos[5]),                     // @Coste
-                    date('Ymd H:i:s', strtotime($arrayDatos[7])),        // @Fecha
-                    $_SESSION["Controlador"]->miEstado->IdPersonal,      // @IdPersonal
-                    $_SESSION["Controlador"]->miEstado->IdIdentidad      // @IdIdentidad
-                );
+            $parm = array($_SESSION["Controlador"] -> miEstado -> IdPropietario,
+            $arrayDatos[0],
+            $arrayDatos[1],
+            $arrayDatos[2],
+            $arrayDatos[3],
+            ConvertirAFloat($arrayDatos[4]),
+            ConvertirAFloat($arrayDatos[5]),
+            date('Ymd H:i:s', strtotime($arrayDatos[7]) ),
+            $_SESSION["Controlador"] -> miEstado -> IdPersonal,
+            $_SESSION["Controlador"] -> miEstado -> IdIdentidad);
         }else{
 
             $sql = "DECLARE @FECHA SMALLDATETIME = GETDATE()
@@ -1207,22 +1200,14 @@ function insertProyectosTareaMaterial($MaterialProyecto,$arrayDatos){
         }
     }
     
-    $stmt = sqlsrv_query($conn, $sql, $parm);
-
-    if ($stmt === false) {
+    $stmt = sqlsrv_prepare($conn, $sql, $parm);
+    if (!sqlsrv_execute($stmt)) {
         die(print_r(sqlsrv_errors(), true));
-    }
-
-    // Ya no avanzamos al siguiente resultado porque el SELECT está en el primer resultado después del EXEC.
-    $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
-
-    if ($row && isset($row['IdProyectoMaterial'])) {
-        return $row['IdProyectoMaterial'];
-    } else {
-        return false;  // o true, según prefieras para indicar fallo
-    }
-
-}
+        return false;
+        die;
+    }else{
+        return 1;
+    }   
 
 function comprobarBD($c){
     $conn = ConexionBD("85.214.41.17,23459","IntecoDistribucion","sa","Iiaslgv52d");
