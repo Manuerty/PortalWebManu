@@ -268,7 +268,7 @@ if (curl_errno($ch)) {
                     $host = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '';
                     $requestUri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
                     $urlCompleta = "https://$host$requestUri";
-                    $ruta = str_replace('GestionSubidaArchivos.php','',$urlCompleta);
+                    $ruta = str_replace('procesarGemini.php','',$urlCompleta);
                     
                     return $ruta.$directorioDestino.str_replace([' ', '/'] ,['_','_'] ,$archivo["name"]);
                 } else {

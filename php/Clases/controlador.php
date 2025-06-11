@@ -1100,7 +1100,7 @@ class Controlador
                 $archivoTemp = $this->miEstado->archivoAdjuntoTemporal; 
                 $this->miEstado->archivoAdjuntoTemporal = null;
                 
-                //var_dump($archivoTemp);
+                var_dump($archivoTemp);
             }
             else{
                 $this -> miEstado -> adjuntarDocumentoFormAutomatico = 1 ;
