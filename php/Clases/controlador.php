@@ -1126,7 +1126,7 @@ class Controlador
 
                 $subida = $this -> subirArchivosServicioWeb($_SESSION["pinC"],
                                             $this -> miEstado -> IdTipoPropietario,
-                                            $this -> miEstado -> IdPropietario,
+                                            $resultado,
                                             $arrayDatos[2][0],
                                             $archivoTemp,
                                             $nombre_archivo);
@@ -1135,7 +1135,7 @@ class Controlador
                     $msgError .= "-";
                     $msgError .= $this -> miEstado -> IdTipoPropietario;
                     $msgError .= "-";
-                    $msgError .= $this -> miEstado -> IdPropietario;
+                    $msgError .= $resultado;
                 }
             }
             $this -> miEstado -> arrayDatosAux = extraerRecursosFaseProyecto($this -> miEstado -> IdPropietario,$tipoMat);

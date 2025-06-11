@@ -1140,33 +1140,34 @@ function insertProyectosTareaMaterial($MaterialProyecto,$arrayDatos){
     }else{
 
         if($arrayDatos[7] == 0 || $arrayDatos[7] == NULL || $arrayDatos[7] == ''){
-            $sql = "DECLARE @FECHA SMALLDATETIME = GETDATE(),
-                    @IdProyectoMaterial INT
-            EXECUTE dbo.up_ProyectosMateriales_Insert
-            @IdProyectoMaterial = @IdProyectoMaterial OUTPUT,
-            @IdProyecto = ?,
-            @IdProyectoTarea = ?,
-            @IdProyectoMaterialTipo = ?, 
-            @IdArticulo = ?, 
-            @Descripcion = ?, 
-            @Cantidad = ?,
-            @Coste = ?,
-            @Fecha =?,
-            @IdPersonal = ?,
-            @IdIdentidad = ?";
+            $idProyectoMaterial = 0;
+            $sql = "EXEC dbo.up_ProyectosMateriales_Insert
+                    @IdProyectoMaterial = ? OUTPUT,
+                    @IdProyecto = ?,
+                    @IdProyectoTarea = ?,
+                    @IdProyectoMaterialTipo = ?,
+                    @IdArticulo = ?,
+                    @Descripcion = ?,
+                    @Cantidad = ?,
+                    @Coste = ?,
+                    @Fecha = ?,
+                    @IdPersonal = ?,
+                    @IdIdentidad = ?";
 
-            
+                $parm = array(
+                    array(&$idProyectoMaterial, SQLSRV_PARAM_OUT),
+                    $_SESSION["Controlador"]->miEstado->IdPropietario,
+                    $arrayDatos[0],
+                    $arrayDatos[1],
+                    $arrayDatos[2],
+                    $arrayDatos[3],
+                    ConvertirAFloat($arrayDatos[4]),
+                    ConvertirAFloat($arrayDatos[5]),
+                    date('Ymd H:i:s', strtotime($arrayDatos[7])),
+                    $_SESSION["Controlador"]->miEstado->IdPersonal,
+                    $_SESSION["Controlador"]->miEstado->IdIdentidad
+                );
 
-            $parm = array($_SESSION["Controlador"] -> miEstado -> IdPropietario,
-            $arrayDatos[0],
-            $arrayDatos[1],
-            $arrayDatos[2],
-            $arrayDatos[3],
-            ConvertirAFloat($arrayDatos[4]),
-            ConvertirAFloat($arrayDatos[5]),
-            date('Ymd H:i:s', strtotime($arrayDatos[7]) ),
-            $_SESSION["Controlador"] -> miEstado -> IdPersonal,
-            $_SESSION["Controlador"] -> miEstado -> IdIdentidad);
         }else{
 
             $sql = "DECLARE @FECHA SMALLDATETIME = GETDATE()
@@ -1203,13 +1204,19 @@ function insertProyectosTareaMaterial($MaterialProyecto,$arrayDatos){
     var_dump($parm[0]);
     
     $stmt = sqlsrv_prepare($conn, $sql, $parm);
-    if (!sqlsrv_execute($stmt)) {
+    if (!$stmt) {
+        die(print_r(sqlsrv_errors(), true));
+    }
+
+    if (sqlsrv_execute($stmt)) {
+        if ($idProyectoMaterial == 0 or $idProyectoMaterial == NULL or $idProyectoMaterial == '') {
+            return true;
+        }
+        return $idProyectoMaterial; 
+    } else {
         die(print_r(sqlsrv_errors(), true));
         return false;
-        die;
-    }else{
-        return 1;
-    }   
+    }
 
 
 }
