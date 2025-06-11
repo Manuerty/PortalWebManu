@@ -1113,20 +1113,38 @@ class Controlador
             if($c == 6.1){
                 $tipoMat = 0;
             }
+            elseif ($c == 6.2 && $this -> miEstado -> Estado == 6.2){
+                $this -> miEstado -> adjuntarDocumentoFormAutomatico = 0 ;
+                $this -> miEstado -> IdTipoPropietario = 149;
+                $accionJs = 3;
+            }
             else{
                 $this -> miEstado -> adjuntarDocumentoFormAutomatico = 1 ;
                 $this -> miEstado -> IdTipoPropietario = 149;
                 $accionJs = 3;
             }
             $resultado = insertProyectosTareaMaterial($c,$arrayDatos[2]);
+            
+            $this -> miEstado -> arrayDatosAux = extraerRecursosFaseProyecto($this -> miEstado -> IdPropietario,$tipoMat);
+            $ultimoElemento = null;
+
             if ($c == 6.2 && $this->miEstado->archivoAdjuntoTemporal != null) {
+
+                foreach (array_reverse($this -> miEstado -> arrayDatosAux) as $item) {
+                    if (isset($item["tipoDocPortal"]) && $item["tipoDocPortal"] == 9.2) {
+                        $ultimoElemento = $item;
+                        break;
+                    }
+                }
+                $this -> miEstado -> IdPropietarioAuxiliar = $ultimoElemento['id'];
+
                 $archivoTemp = $this->miEstado->archivoAdjuntoTemporal[0];
                 $nombre_archivo = $this->miEstado->archivoAdjuntoTemporal[1];
                 $this->miEstado->archivoAdjuntoTemporal = null;
 
                 $subida = $this -> subirArchivosServicioWeb($_SESSION["pinC"],
                                             $this -> miEstado -> IdTipoPropietario,
-                                            $resultado,
+                                            $this -> miEstado -> IdPropietarioAuxiliar,
                                             $arrayDatos[2][0],
                                             $archivoTemp,
                                             $nombre_archivo);
@@ -1135,7 +1153,7 @@ class Controlador
                     $msgError .= "-";
                     $msgError .= $this -> miEstado -> IdTipoPropietario;
                     $msgError .= "-";
-                    $msgError .= $resultado;
+                    $msgError .= $this -> miEstado -> IdPropietarioAuxiliar;
                     $msgError .= "-";
                     $msgError .= $arrayDatos[2][0];
                     $msgError .= "-";
@@ -1144,8 +1162,6 @@ class Controlador
                     $msgError .= $nombre_archivo;
                 }
             }
-            $this -> miEstado -> arrayDatosAux = extraerRecursosFaseProyecto($this -> miEstado -> IdPropietario,$tipoMat);
-            $ultimoElemento = null;
 
             
             
