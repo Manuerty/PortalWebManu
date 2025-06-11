@@ -1199,6 +1199,8 @@ function insertProyectosTareaMaterial($MaterialProyecto,$arrayDatos){
  
         }
     }
+
+    var_dump($parm[0]);
     
     $stmt = sqlsrv_prepare($conn, $sql, $parm);
     if (!sqlsrv_execute($stmt)) {
