@@ -1154,19 +1154,19 @@ function insertProyectosTareaMaterial($MaterialProyecto,$arrayDatos){
                     @IdPersonal = ?,
                     @IdIdentidad = ?";
 
-                $parm = array(
-                    array(&$idProyectoMaterial, SQLSRV_PARAM_OUT),
-                    $_SESSION["Controlador"]->miEstado->IdPropietario,
-                    $arrayDatos[0],
-                    $arrayDatos[1],
-                    $arrayDatos[2],
-                    $arrayDatos[3],
-                    ConvertirAFloat($arrayDatos[4]),
-                    ConvertirAFloat($arrayDatos[5]),
-                    date('Ymd H:i:s', strtotime($arrayDatos[7])),
-                    $_SESSION["Controlador"]->miEstado->IdPersonal,
-                    $_SESSION["Controlador"]->miEstado->IdIdentidad
-                );
+            $parm = array(
+                array(&$idProyectoMaterial, SQLSRV_PARAM_OUT),  // 👈 Este es el OUTPUT
+                $_SESSION["Controlador"]->miEstado->IdPropietario,   // @IdProyecto
+                $arrayDatos[0],                                      // @IdProyectoTarea
+                $arrayDatos[1],                                      // @IdProyectoMaterialTipo
+                $arrayDatos[2],                                      // @IdArticulo
+                $arrayDatos[3],                                      // @Descripcion
+                ConvertirAFloat($arrayDatos[4]),                     // @Cantidad
+                ConvertirAFloat($arrayDatos[5]),                     // @Coste
+                date('Ymd H:i:s', strtotime($arrayDatos[7])),        // @Fecha
+                $_SESSION["Controlador"]->miEstado->IdPersonal,      // @IdPersonal
+                $_SESSION["Controlador"]->miEstado->IdIdentidad      // @IdIdentidad
+            );
 
         }else{
 
