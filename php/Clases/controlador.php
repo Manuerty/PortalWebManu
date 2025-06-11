@@ -880,7 +880,7 @@ class Controlador
                     $tipoDocf = 3;
                     $this -> miEstado -> IdTipoPropietario = 147;
                     break;
-                case 6.2:
+                case 6.2 or 6:
                     $tipoDocf = 3;
                     $this -> miEstado -> IdTipoPropietario = 149;
                     break;
@@ -1298,6 +1298,7 @@ class Controlador
         $txtErr .= "Id usuario: ".$this -> miEstado -> IdPersonal;
         $txtErr .= " - Id propietario: ".$this -> miEstado -> IdPropietario;
         $txtErr .= " - Id tipo propietario: ".$this -> miEstado -> IdTipoPropietario;
+        $txtErr .= "- Estado: ".$this -> miEstado -> Estado;
         
         return array(pinta_contenido($this -> miEstado -> Estado, $this -> miEstado -> tipo_App).$txtErr,$msgError,$AccionSinRepintar,$arrayAuxiliarHtml,$accionJs);
     }
