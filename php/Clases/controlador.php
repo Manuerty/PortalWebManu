@@ -1107,6 +1107,9 @@ class Controlador
                                             $arrayDatos[2][0],
                                             $archivoTemp,
                                             $nombre_archivo);
+                if($subida === false){
+                    $msgError = "Error al subir el archivo al servidor.";
+                }
             }
             else{
                 $this -> miEstado -> adjuntarDocumentoFormAutomatico = 1 ;
