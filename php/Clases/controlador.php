@@ -1146,7 +1146,7 @@ class Controlador
                 $subida = $this -> subirArchivosServicioWeb($_SESSION["pinC"],
                                             $this -> miEstado -> IdTipoPropietario,
                                             $this -> miEstado -> IdPropietarioAuxiliar,
-                                            $arrayDatos[2][0],
+                                            32,
                                             $archivoTemp,
                                             $nombre_archivo);
                 if($subida === false){
