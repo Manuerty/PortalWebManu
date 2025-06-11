@@ -1142,6 +1142,8 @@ function insertProyectosTareaMaterial($MaterialProyecto,$arrayDatos){
 
         if($arrayDatos[7] == 0 || $arrayDatos[7] == NULL || $arrayDatos[7] == ''){
             $sql = "
+                    SET NOCOUNT ON;
+
                     DECLARE @IdProyectoMaterial INT;
 
                     EXEC dbo.up_ProyectosMateriales_Insert
@@ -1211,18 +1213,13 @@ function insertProyectosTareaMaterial($MaterialProyecto,$arrayDatos){
         die(print_r(sqlsrv_errors(), true));
     }
 
-    // Avanza al siguiente resultado (donde está el SELECT con el OUTPUT)
-    while (sqlsrv_next_result($stmt)) {
-        // cuando sqlsrv_next_result devuelve false, es que no hay más resultados
-    }
-
-    // Ahora sí obtenemos la fila del SELECT
+    // Ya no avanzamos al siguiente resultado porque el SELECT está en el primer resultado después del EXEC.
     $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
 
     if ($row && isset($row['IdProyectoMaterial'])) {
         return $row['IdProyectoMaterial'];
     } else {
-        return true;  // o false si quieres indicar fallo
+        return false;  // o true, según prefieras para indicar fallo
     }
 
 }
