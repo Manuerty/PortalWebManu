@@ -880,7 +880,7 @@ class Controlador
                     $tipoDocf = 3;
                     $this -> miEstado -> IdTipoPropietario = 147;
                     break;
-                case 6.2 or 6:
+                case 6.2:
                     $tipoDocf = 3;
                     $this -> miEstado -> IdTipoPropietario = 149;
                     break;
@@ -973,11 +973,12 @@ class Controlador
                 && $docF["id"] ==  $arrayDatos[1];
             }));
 
-            
             $this -> miEstado -> nombreDocumentoPadre = $arrayDoc[0]['Descripcion'];
             $tipoMat = 1;
+            $this -> miEstado -> IdTipoPropietario = 149;
             if($arrayDatos[0] == 6.1){
                 $tipoMat = 0;
+                $this -> miEstado -> IdTipoPropietario = 147;
             }
             $this -> miEstado -> IdPropietario = $arrayDatos[1]; 
             $this -> miEstado -> arrayDatosAux = extraerRecursosFaseProyecto($arrayDatos[1],$tipoMat);
