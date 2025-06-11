@@ -462,29 +462,46 @@ class Controlador
 
     //Subir los archivos mediante llamada al servicio web
     function subirArchivosServicioWeb($pin, $IdtipoPropietario, $idPropietario, $idArchivoTipo, $url, $nombre_archivo) {
-        $url2 = "http://onixsw.esquio.es:8080/Funciones.aspx?SubirArchivo=1&pin=" . $pin .
-            "&IdTipoPropietario=" . $IdtipoPropietario .
-            '&IdPropietario=' . $idPropietario .
-            '&IdArchivoTipo=' . $idArchivoTipo .
+        $url2 = "http://onixsw.esquio.es:8080/Funciones.aspx?SubirArchivo=1&pin=" . urlencode($pin) .
+            "&IdTipoPropietario=" . urlencode($IdtipoPropietario) .
+            '&IdPropietario=' . urlencode($idPropietario) .
+            '&IdArchivoTipo=' . urlencode($idArchivoTipo) .
             '&URL=' . urlencode($url) .
-            '&NombreArchivo=' . urlencode($nombre_archivo); // Mejor codificar también esto
+            '&NombreArchivo=' . urlencode($nombre_archivo);
+
+        // Mostrar URL completa (debug)
+        echo "<pre>🔗 URL construida:\n$url2\n</pre>";
+
+        $opts = [
+            "http" => [
+                "method" => "GET",
+                "header" => "Accept: application/json\r\n" // Por si devuelve JSON
+            ]
+        ];
+        $context = stream_context_create($opts);
 
         try {
-            $response = file_get_contents($url2);
+            $response = file_get_contents($url2, false, $context);
 
-            // Puedes descomentar esto para depurar
-            // echo "Respuesta del servidor: " . $response;
+            if ($response === false) {
+                echo "<pre>❌ Error: file_get_contents devolvió false.</pre>";
+                if (isset($http_response_header)) {
+                    echo "<pre>📡 Cabeceras HTTP:\n" . implode("\n", $http_response_header) . "</pre>";
+                }
+                return false;
+            }
 
-            // Si esperas un texto como "OK" o "TRUE", compruébalo:
-            if ($response !== false && stripos($response, 'ok') !== false) {
+            echo "<pre>📩 Respuesta del servidor:\n$response</pre>";
+
+            // Aquí puedes adaptarte a cómo responde el servidor
+            if (stripos($response, 'ok') !== false || stripos($response, 'true') !== false) {
                 return true;
             } else {
                 return false;
             }
 
-        } catch (\Throwable $th) {
-            // Puedes loguear el error si quieres
-            // error_log("Error al subir archivo: " . $th->getMessage());
+        } catch (Throwable $th) {
+            echo "<pre>🔥 Excepción atrapada:\n" . $th->getMessage() . "</pre>";
             return false;
         }
     }
