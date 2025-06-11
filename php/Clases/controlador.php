@@ -1142,11 +1142,12 @@ class Controlador
                 $archivoTemp = $this->miEstado->archivoAdjuntoTemporal[0];
                 $nombre_archivo = $this->miEstado->archivoAdjuntoTemporal[1];
                 $this->miEstado->archivoAdjuntoTemporal = null;
+                $tiposarchivo = "32";
 
                 $subida = $this -> subirArchivosServicioWeb($_SESSION["pinC"],
                                             $this -> miEstado -> IdTipoPropietario,
                                             $this -> miEstado -> IdPropietarioAuxiliar,
-                                            32,
+                                            $tiposarchivo, 
                                             $archivoTemp,
                                             $nombre_archivo);
                 if($subida === false){
@@ -1156,7 +1157,7 @@ class Controlador
                     $msgError .= "-";
                     $msgError .= $this -> miEstado -> IdPropietarioAuxiliar;
                     $msgError .= "-";
-                    $msgError .= $arrayDatos[2][0];
+                    $msgError .= $tiposarchivo;
                     $msgError .= "-";
                     $msgError .= $archivoTemp;
                     $msgError .= "-";
