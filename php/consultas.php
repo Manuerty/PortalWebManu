@@ -1107,6 +1107,7 @@ function insertProyectosTareaMaterial($MaterialProyecto,$arrayDatos){
     $conn = ConexionBD($_SESSION["Controlador"] -> miEstado -> IP, $_SESSION["Controlador"] -> miEstado -> bbdd);
     $sql = "";
     $parm = array();
+    $idProyectoMaterial = 0;
     if($MaterialProyecto == 6.1){
             $sql = " INSERT INTO dbo.PETiemposProyectosAppSheet
         (IdPETiemposProyectosAppSheet,
@@ -1140,7 +1141,6 @@ function insertProyectosTareaMaterial($MaterialProyecto,$arrayDatos){
     }else{
 
         if($arrayDatos[7] == 0 || $arrayDatos[7] == NULL || $arrayDatos[7] == ''){
-            $idProyectoMaterial = 0;
             $sql = "EXEC dbo.up_ProyectosMateriales_Insert
                     @IdProyectoMaterial = ? OUTPUT,
                     @IdProyecto = ?,
@@ -1200,8 +1200,6 @@ function insertProyectosTareaMaterial($MaterialProyecto,$arrayDatos){
  
         }
     }
-
-    var_dump($parm[0]);
     
     $stmt = sqlsrv_prepare($conn, $sql, $parm);
     if (!$stmt) {
@@ -1209,13 +1207,9 @@ function insertProyectosTareaMaterial($MaterialProyecto,$arrayDatos){
     }
 
     if (sqlsrv_execute($stmt)) {
-        if ($idProyectoMaterial == 0 or $idProyectoMaterial == NULL or $idProyectoMaterial == '') {
-            return true;
-        }
-        return $idProyectoMaterial; 
+        return ($idProyectoMaterial > 0) ? $idProyectoMaterial : true;
     } else {
         die(print_r(sqlsrv_errors(), true));
-        return false;
     }
 
 
