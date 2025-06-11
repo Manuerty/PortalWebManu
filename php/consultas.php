@@ -1141,33 +1141,37 @@ function insertProyectosTareaMaterial($MaterialProyecto,$arrayDatos){
     }else{
 
         if($arrayDatos[7] == 0 || $arrayDatos[7] == NULL || $arrayDatos[7] == ''){
-            $sql = "EXEC dbo.up_ProyectosMateriales_Insert
-                    @IdProyectoMaterial = ? OUTPUT,
-                    @IdProyecto = ?,
-                    @IdProyectoTarea = ?,
-                    @IdProyectoMaterialTipo = ?,
-                    @IdArticulo = ?,
-                    @Descripcion = ?,
-                    @Cantidad = ?,
-                    @Coste = ?,
-                    @Fecha = ?,
-                    @IdPersonal = ?,
-                    @IdIdentidad = ?";
+            $sql = "
+                    DECLARE @IdProyectoMaterial INT;
 
-            $parm = array(
-                array(&$idProyectoMaterial, SQLSRV_PARAM_OUT),  // 👈 Este es el OUTPUT
-                $_SESSION["Controlador"]->miEstado->IdPropietario,   // @IdProyecto
-                $arrayDatos[0],                                      // @IdProyectoTarea
-                $arrayDatos[1],                                      // @IdProyectoMaterialTipo
-                $arrayDatos[2],                                      // @IdArticulo
-                $arrayDatos[3],                                      // @Descripcion
-                ConvertirAFloat($arrayDatos[4]),                     // @Cantidad
-                ConvertirAFloat($arrayDatos[5]),                     // @Coste
-                date('Ymd H:i:s', strtotime($arrayDatos[7])),        // @Fecha
-                $_SESSION["Controlador"]->miEstado->IdPersonal,      // @IdPersonal
-                $_SESSION["Controlador"]->miEstado->IdIdentidad      // @IdIdentidad
-            );
+                    EXEC dbo.up_ProyectosMateriales_Insert
+                        @IdProyectoMaterial = @IdProyectoMaterial OUTPUT,
+                        @IdProyecto = ?,
+                        @IdProyectoTarea = ?,
+                        @IdProyectoMaterialTipo = ?,
+                        @IdArticulo = ?,
+                        @Descripcion = ?,
+                        @Cantidad = ?,
+                        @Coste = ?,
+                        @Fecha = ?,
+                        @IdPersonal = ?,
+                        @IdIdentidad = ?;
 
+                    SELECT @IdProyectoMaterial AS IdProyectoMaterial;
+                ";
+
+                $parm = array(
+                    $_SESSION["Controlador"]->miEstado->IdPropietario,   // @IdProyecto
+                    $arrayDatos[0],                                      // @IdProyectoTarea
+                    $arrayDatos[1],                                      // @IdProyectoMaterialTipo
+                    $arrayDatos[2],                                      // @IdArticulo
+                    $arrayDatos[3],                                      // @Descripcion
+                    ConvertirAFloat($arrayDatos[4]),                     // @Cantidad
+                    ConvertirAFloat($arrayDatos[5]),                     // @Coste
+                    date('Ymd H:i:s', strtotime($arrayDatos[7])),        // @Fecha
+                    $_SESSION["Controlador"]->miEstado->IdPersonal,      // @IdPersonal
+                    $_SESSION["Controlador"]->miEstado->IdIdentidad      // @IdIdentidad
+                );
         }else{
 
             $sql = "DECLARE @FECHA SMALLDATETIME = GETDATE()
@@ -1201,17 +1205,19 @@ function insertProyectosTareaMaterial($MaterialProyecto,$arrayDatos){
         }
     }
     
-    $stmt = sqlsrv_prepare($conn, $sql, $parm);
-    if (!$stmt) {
+    $stmt = sqlsrv_query($conn, $sql, $parm);
+
+    if ($stmt === false) {
         die(print_r(sqlsrv_errors(), true));
     }
 
-    if (sqlsrv_execute($stmt)) {
-        return ($idProyectoMaterial > 0) ? $idProyectoMaterial : true;
+    $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+
+    if ($row && isset($row['IdProyectoMaterial'])) {
+        return $row['IdProyectoMaterial'];
     } else {
-        die(print_r(sqlsrv_errors(), true));
+        return true; // o false, dependiendo de tu lógica
     }
-
 
 }
 
