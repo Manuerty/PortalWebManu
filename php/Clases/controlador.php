@@ -1258,7 +1258,11 @@ class Controlador
                                             $arrayDatos[3],
                                             $nombre_archivo);
 
-            var_dump($arrayDatos[2][0]);
+            var_dump($this -> miEstado -> IdTipoPropietario,
+                    $this -> miEstado -> IdPropietarioAuxiliar,
+                    $arrayDatos[2][0],
+                    $arrayDatos[3],
+                    $nombre_archivo);
                                 
             $resultadoEjecucion = exect_Insert_From_DinamicoSubidaArchivos($arrayDatos[2],$arrayDatos[3]);
             if($resultadoEjecucion == false ){
