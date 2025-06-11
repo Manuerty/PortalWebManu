@@ -1114,7 +1114,7 @@ class Controlador
                 $tipoMat = 0;
             }
             elseif ($c == 6.2 && $this -> miEstado -> Estado == 6.2){
-                $this -> miEstado -> adjuntarDocumentoFormAutomatico = 1 ;
+                $this -> miEstado -> adjuntarDocumentoFormAutomatico = 0 ;
                 $this -> miEstado -> IdTipoPropietario = 149;
                 $accionJs = 3;
             }
