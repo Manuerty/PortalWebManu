@@ -1209,6 +1209,9 @@ function insertProyectosTareaMaterial($MaterialProyecto,$arrayDatos){
         return 1;
     }   
 
+
+}
+
 function comprobarBD($c){
     $conn = ConexionBD("85.214.41.17,23459","IntecoDistribucion","sa","Iiaslgv52d");
     //sacar el primero en caso de que coincidan
