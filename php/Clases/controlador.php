@@ -1128,6 +1128,7 @@ class Controlador
             $this -> miEstado -> arrayDatosAux = extraerRecursosFaseProyecto($this -> miEstado -> IdPropietario,$tipoMat);
             $ultimoElemento = null;
 
+            //SUBIR ARCHIVOS DIRECTAMTNE DE LA IMAGEN USADA PARA EL ANALISIS DE IA//
             if ($c == 6.2 && $this->miEstado->archivoAdjuntoTemporal != null) {
 
                 foreach (array_reverse($this -> miEstado -> arrayDatosAux) as $item) {
@@ -1256,6 +1257,8 @@ class Controlador
                                             $arrayDatos[2][0],
                                             $arrayDatos[3],
                                             $nombre_archivo);
+
+            var_dump($arrayDatos[2][0]);
                                 
             $resultadoEjecucion = exect_Insert_From_DinamicoSubidaArchivos($arrayDatos[2],$arrayDatos[3]);
             if($resultadoEjecucion == false ){
