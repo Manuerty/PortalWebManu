@@ -1211,12 +1211,18 @@ function insertProyectosTareaMaterial($MaterialProyecto,$arrayDatos){
         die(print_r(sqlsrv_errors(), true));
     }
 
+    // Avanza al siguiente resultado (donde está el SELECT con el OUTPUT)
+    while (sqlsrv_next_result($stmt)) {
+        // cuando sqlsrv_next_result devuelve false, es que no hay más resultados
+    }
+
+    // Ahora sí obtenemos la fila del SELECT
     $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
 
     if ($row && isset($row['IdProyectoMaterial'])) {
         return $row['IdProyectoMaterial'];
     } else {
-        return true; // o false, dependiendo de tu lógica
+        return true;  // o false si quieres indicar fallo
     }
 
 }
