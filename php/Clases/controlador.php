@@ -1098,39 +1098,8 @@ class Controlador
             }
             elseif ($c == 6.2 && $this->miEstado->archivoAdjuntoTemporal != null) {
                 $archivoTemp = $this->miEstado->archivoAdjuntoTemporal; 
-                $this->miEstado->archivoAdjuntoTemporal = null;
-
-                $nombreArchivo = $archivoTemp['nombre'];
-                $tipoMime = $archivoTemp['tipo'];
-                $contenidoBase64 = $archivoTemp['contenido'];
-
-                // Guardar en carpeta pública (ajusta esta ruta según tu estructura)
-                $carpetaPublica = __DIR__ . "/../php/subidasTemp/"; // ruta física carpeta pública
-                if (!is_dir($carpetaPublica)) {
-                    mkdir($carpetaPublica, 0755, true);
-                }
-                $nombreUnico = uniqid() . "_" . str_replace([' ', '/'], ['_', '_'], $nombreArchivo);
-                $rutaArchivo = $carpetaPublica . $nombreUnico;
-
-                file_put_contents($rutaArchivo, base64_decode($contenidoBase64));
-
-                // Generar URL pública (ajústala según tu dominio y estructura)
-                $urlPublica = "https://localhost/PortalWebManu/php/subidasTemp/" . $nombreUnico;
-
-                $subida = $this->subirArchivosServicioWeb(
-                    $_SESSION["pinC"],
-                    $this->miEstado->IdTipoPropietario,
-                    $this->miEstado->IdPropietario,
-                    $arrayDatos[2][0], // ID Tipo de archivo
-                    $urlPublica,
-                    $nombreUnico
-                );
-
-                echo $subida ? "Archivo subido correctamente." : "Error al subir el archivo.";
-
-                if (file_exists($rutaArchivo)) {
-                    unlink($rutaArchivo);
-                }
+                
+                var_dump($archivoTemp);
             }
             else{
                 $this -> miEstado -> adjuntarDocumentoFormAutomatico = 1 ;

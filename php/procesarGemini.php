@@ -11,21 +11,28 @@ if (!isset($_FILES['archivo'])) {
     exit;
 }
 
-$filePath = $_FILES['archivo']['tmp_name'];
-$mimeType = mime_content_type($filePath);
+$archivoInfo = $_FILES['archivo'];
+$tmpPath = $archivoInfo['tmp_name'];
+
+// 1. Validar tipo MIME y contenido base64 ANTES de mover
+$mimeType = mime_content_type($tmpPath);
 if (strpos($mimeType, 'image/') !== 0 && $mimeType !== 'application/pdf') {
     echo json_encode(["error" => "El archivo debe ser una imagen o un PDF válido."]);
     exit;
 }
 
-$fileData = base64_encode(file_get_contents($filePath));
+$fileData = base64_encode(file_get_contents($tmpPath));
 
-// Guardar archivo en el estado para uso posterior
-$_SESSION["Controlador"]->miEstado->archivoAdjuntoTemporal = [
-    'nombre' => $_FILES['archivo']['name'],
-    'tipo' => $mimeType,
-    'contenido' => $fileData
-];
+// 2. Guardar archivo (ahora sí)
+$archivoRutaGuardada = gestionarSubirArchivo($archivoInfo);
+
+if (!$archivoRutaGuardada) {
+    echo json_encode(["error" => "Error al guardar el archivo en el servidor."]);
+    exit;
+}
+
+// 3. Guardar en sesión
+$_SESSION["Controlador"]->miEstado->archivoAdjuntoTemporal = $archivoRutaGuardada;
 
 if (!isset($_SESSION["Controlador"])) {
     echo json_encode(["error" => "No existe 'Controlador' en la sesión."]);
@@ -214,10 +221,70 @@ if (curl_errno($ch)) {
     } else {
         echo json_encode([
             "error" => "La respuesta del modelo no es JSON válido.",
+            "decoded" => $decoded,  // Agregado para depurar
             "raw" => $texto,
             "decode_error" => json_last_error_msg()
         ]);
         exit;
     }
 }
+
+    function gestionarSubirArchivo($archivo){
+        if($archivo){
+        $tamanoMaximoArchivo =  4 * 1024 * 1024;
+        //$tamanoMaximoArchivo =  1024 * 1024;
+
+        //Comprobaciones de seguridad del tipo de archivo
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $tipo_mime = finfo_file($finfo, $archivo["tmp_name"]);
+        finfo_close($finfo);
+
+        $tipos_no_permitidos = array('application/x-msdownload',
+                                        'application/x-msdos-program', 
+                                        'application/x-dosexec', 
+                                        'application/bat', 
+                                        'application/cmd',
+                                        'application/x-sh',
+                                        'application/x-php');
+                                        
+        if (!in_array($tipo_mime, $tipos_no_permitidos)) {    
+            $tamanioArchivo = $archivo["size"];
+
+            if ($tamanioArchivo <= $tamanoMaximoArchivo) {
+                if(!file_exists('subidasTemp')){
+                    mkdir('subidasTemp/', 0755, true);
+                    chown('subidasTemp/', 'www-data');
+                }
+        
+                $directorioDestino = 'subidasTemp/'.$_SESSION["pinC"].'/';
+                
+                // Verificar si el directorio existe o crearlo si es necesario
+                if (!file_exists($directorioDestino)) {
+                    mkdir($directorioDestino, 0755, true);
+                    chown($directorioDestino, 'www-data');
+                }
+    
+                if (move_uploaded_file($archivo["tmp_name"], $directorioDestino . str_replace([' ', '/'] ,['_','_'] ,$archivo["name"]) )){
+                    $host = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '';
+                    $requestUri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+                    $urlCompleta = "https://$host$requestUri";
+                    $ruta = str_replace('GestionSubidaArchivos.php','',$urlCompleta);
+                    
+                    return $ruta.$directorioDestino.str_replace([' ', '/'] ,['_','_'] ,$archivo["name"]);
+                } else {
+                    return null;
+                }
+            }else{
+                return null;
+            }
+            
+        }else{
+            return null;
+        }
+    }else{
+        return null;
+    }
+}
+
+?>
 

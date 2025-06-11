@@ -1124,6 +1124,7 @@ function procesarInformacionAsistenteIa() {
                 return;
             }
             $('#modalAsistenteIa').one('hidden.bs.modal', function () {
+            console.log("Datos procesados:", data);
                 abrirModalRegistroTicketConDatos(data);
             });
             $('#modalAsistenteIa').modal('hide');
