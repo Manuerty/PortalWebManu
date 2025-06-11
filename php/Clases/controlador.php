@@ -1109,29 +1109,9 @@ class Controlador
         //********************************************/
         //PORTAL EMPLEADO Insertar Material/Tiempo de proyectos
         //********************************************/
-        
             $tipoMat = 1;
             if($c == 6.1){
                 $tipoMat = 0;
-            }
-            elseif ($c == 6.2 && $this->miEstado->archivoAdjuntoTemporal != null) {
-                $archivoTemp = $this->miEstado->archivoAdjuntoTemporal[0];
-                $nombre_archivo = $this->miEstado->archivoAdjuntoTemporal[1];
-                $this->miEstado->archivoAdjuntoTemporal = null;
-
-                $subida = $this -> subirArchivosServicioWeb($_SESSION["pinC"],
-                                            $this -> miEstado -> IdTipoPropietario,
-                                            $this -> miEstado -> IdPropietarioAuxiliar,
-                                            $arrayDatos[2][0],
-                                            $archivoTemp,
-                                            $nombre_archivo);
-                if($subida === false){
-                    $msgError = "Error al subir el archivo al servidor.";
-                    $msgError .= "-";
-                    $msgError .= $this -> miEstado -> IdTipoPropietario;
-                    $msgError .= "-";
-                    $msgError .= $this -> miEstado -> IdPropietarioAuxiliar;
-                }
             }
             else{
                 $this -> miEstado -> adjuntarDocumentoFormAutomatico = 1 ;
@@ -1141,6 +1121,26 @@ class Controlador
             $resultado = insertProyectosTareaMaterial($c,$arrayDatos[2]);
             $this -> miEstado -> arrayDatosAux = extraerRecursosFaseProyecto($this -> miEstado -> IdPropietario,$tipoMat);
             $ultimoElemento = null;
+
+            if ($c == 6.2 && $this->miEstado->archivoAdjuntoTemporal != null) {
+                $archivoTemp = $this->miEstado->archivoAdjuntoTemporal[0];
+                $nombre_archivo = $this->miEstado->archivoAdjuntoTemporal[1];
+                $this->miEstado->archivoAdjuntoTemporal = null;
+
+                $subida = $this -> subirArchivosServicioWeb($_SESSION["pinC"],
+                                            $this -> miEstado -> IdTipoPropietario,
+                                            $this -> miEstado -> IdPropietario,
+                                            $arrayDatos[2][0],
+                                            $archivoTemp,
+                                            $nombre_archivo);
+                if($subida === false){
+                    $msgError = "Error al subir el archivo al servidor.";
+                    $msgError .= "-";
+                    $msgError .= $this -> miEstado -> IdTipoPropietario;
+                    $msgError .= "-";
+                    $msgError .= $this -> miEstado -> IdPropietario;
+                }
+            }
             
             if($this -> miEstado -> adjuntarDocumentoFormAutomatico == 1 ){
                 foreach (array_reverse($this -> miEstado -> arrayDatosAux) as $item) {
@@ -1155,6 +1155,7 @@ class Controlador
         //********************************************/
         //PORTAL EMPLEADO Insertar Formularios dinamcos
         //********************************************/ 
+
             if( $this -> miEstado -> Estado == 4.4 ){
                 //var_dump($arrayDatos[4]);
                 $subida = $this -> subirArchivosServicioWeb($_SESSION["pinC"],
@@ -1225,7 +1226,6 @@ class Controlador
         //********************************************/
         //PORTAL EMPLEADO adjuntar archivo desde la pestaña que no es archivos (mierdas varias)
         //********************************************/
-            var_dump($arrayDatos[3]);
             $nombre_archivo = str_replace([' ', '/'] ,['_','_'] ,$arrayDatos[4]);
             $subida = $this -> subirArchivosServicioWeb($_SESSION["pinC"],
                                             $this -> miEstado -> IdTipoPropietario,
