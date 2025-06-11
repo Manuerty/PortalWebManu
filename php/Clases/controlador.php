@@ -461,50 +461,20 @@ class Controlador
     }
 
     //Subir los archivos mediante llamada al servicio web
-    function subirArchivosServicioWeb($pin, $IdtipoPropietario, $idPropietario, $idArchivoTipo, $url, $nombre_archivo) {
-        $url2 = "http://onixsw.esquio.es:8080/Funciones.aspx?SubirArchivo=1&pin=" . urlencode($pin) .
-            "&IdTipoPropietario=" . urlencode($IdtipoPropietario) .
-            '&IdPropietario=' . urlencode($idPropietario) .
-            '&IdArchivoTipo=' . urlencode($idArchivoTipo) .
-            '&URL=' . urlencode($url) .
-            '&NombreArchivo=' . urlencode($nombre_archivo);
-
-        // Mostrar URL completa (debug)
-        echo "<pre>🔗 URL construida:\n$url2\n</pre>";
-
-        $opts = [
-            "http" => [
-                "method" => "GET",
-                "header" => "Accept: application/json\r\n" // Por si devuelve JSON
-            ]
-        ];
-        $context = stream_context_create($opts);
-
+    function subirArchivosServicioWeb($pin,$IdtipoPropietario,$idPropietario,$idArchivoTipo,$url,$nombre_archivo){
+        $url2 = "http://onixsw.esquio.es:8080/Funciones.aspx?SubirArchivo=1&pin=".$pin.
+        "&IdTipoPropietario=".$IdtipoPropietario.'&IdPropietario='.$idPropietario.
+        '&IdArchivoTipo='.$idArchivoTipo.'&URL='.urlencode($url).'&NombreArchivo='.$nombre_archivo;
+        //var_dump($url2);
         try {
-            $response = file_get_contents($url2, false, $context);
-
-            if ($response === false) {
-                echo "<pre>❌ Error: file_get_contents devolvió false.</pre>";
-                if (isset($http_response_header)) {
-                    echo "<pre>📡 Cabeceras HTTP:\n" . implode("\n", $http_response_header) . "</pre>";
-                }
-                return false;
-            }
-
-            echo "<pre>📩 Respuesta del servidor:\n$response</pre>";
-
-            // Aquí puedes adaptarte a cómo responde el servidor
-            if (stripos($response, 'ok') !== false || stripos($response, 'true') !== false) {
-                return true;
-            } else {
-                return false;
-            }
-
-        } catch (Throwable $th) {
-            echo "<pre>🔥 Excepción atrapada:\n" . $th->getMessage() . "</pre>";
-            return false;
+            $response = file_get_contents($url2);
+        } catch (\Throwable $th) {
+            $platano=1; 
         }
+        return true;
     }
+
+
 
     function descargaArchivoServicoWeb($IdP,$nombre_archivo,$tipoDoc = null,$OI = null){
         
