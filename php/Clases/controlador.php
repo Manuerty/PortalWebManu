@@ -462,32 +462,41 @@ class Controlador
 
     //Subir los archivos mediante llamada al servicio web
     function subirArchivosServicioWeb($pin, $IdtipoPropietario, $idPropietario, $idArchivoTipo, $url, $nombre_archivo) {
-        $url2 = "http://onixsw.esquio.es:8080/Funciones.aspx?SubirArchivo=1&pin=" . $pin .
-            "&IdTipoPropietario=" . $IdtipoPropietario .
-            '&IdPropietario=' . $idPropietario .
-            '&IdArchivoTipo=' . $idArchivoTipo .
-            '&URL=' . urlencode($url) .
-            '&NombreArchivo=' . urlencode($nombre_archivo); // Mejor codificar también esto
+    $url2 = "http://onixsw.esquio.es:8080/Funciones.aspx?SubirArchivo=1&pin=" . urlencode($pin) .
+        "&IdTipoPropietario=" . urlencode($IdtipoPropietario) .
+        "&IdPropietario=" . urlencode($idPropietario) .
+        "&IdArchivoTipo=" . urlencode($idArchivoTipo) .
+        "&URL=" . urlencode($url) .
+        "&NombreArchivo=" . urlencode($nombre_archivo);
 
-        try {
-            $response = file_get_contents($url2);
+    try {
+        $response = @file_get_contents($url2);  // @ para capturar errores manualmente
 
-            // Puedes descomentar esto para depurar
-            // echo "Respuesta del servidor: " . $response;
-
-            // Si esperas un texto como "OK" o "TRUE", compruébalo:
-            if ($response !== false && stripos($response, 'ok') !== false) {
-                return true;
-            } else {
-                return false;
-            }
-
-        } catch (\Throwable $th) {
-            // Puedes loguear el error si quieres
-            // error_log("Error al subir archivo: " . $th->getMessage());
+        if ($response === false) {
+            // Captura el error real
+            $error = error_get_last();
+            echo "❌ Error al llamar a file_get_contents:\n";
+            echo "🔗 URL: $url2\n";
+            echo "📛 Error: " . $error['message'] . "\n";
             return false;
         }
-     }
+
+        // Depurar respuesta del servidor
+        echo "📨 Respuesta del servidor: $response\n";
+
+        // Verifica si contiene "ok"
+        if (stripos($response, 'ok') !== false) {
+            return true;
+        } else {
+            echo "⚠️ La respuesta del servidor no contiene 'ok'.\n";
+            return false;
+        }
+
+    } catch (\Throwable $th) {
+        echo "🚨 Excepción lanzada: " . $th->getMessage() . "\n";
+        return false;
+    }
+}
 
 
 
