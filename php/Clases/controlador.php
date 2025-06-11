@@ -1101,14 +1101,12 @@ class Controlador
                 $nombre_archivo = $this->miEstado->archivoAdjuntoTemporal[1];
                 $this->miEstado->archivoAdjuntoTemporal = null;
 
-                /* $subida = $this -> subirArchivosServicioWeb($_SESSION["pinC"],
+                $subida = $this -> subirArchivosServicioWeb($_SESSION["pinC"],
                                             $this -> miEstado -> IdTipoPropietario,
                                             $this -> miEstado -> IdPropietarioAuxiliar,
                                             $arrayDatos[2][0],
                                             $archivoTemp,
-                                            $nombre_archivo); */
-                
-                var_dump($archivoTemp, $nombre_archivo);
+                                            $nombre_archivo);
             }
             else{
                 $this -> miEstado -> adjuntarDocumentoFormAutomatico = 1 ;
