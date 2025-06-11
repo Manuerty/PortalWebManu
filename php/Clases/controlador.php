@@ -1141,6 +1141,10 @@ class Controlador
                                             $nombre_archivo);
                 if($subida === false){
                     $msgError = "Error al subir el archivo al servidor.";
+                    $msgError .= "-";
+                    $msgError .= $this -> miEstado -> IdTipoPropietario;
+                    $msgError .= "-";
+                    $msgError .= $this -> miEstado -> IdPropietarioAuxiliar;
                 }
             }
             else{
