@@ -493,7 +493,7 @@ class Controlador
         "&NombreArchivo=" . urlencode($nombre_archivo);
 
     $log .= "🔗 URL generada para la subida:\n$url2\n";
-
+    var_dump($url2);
     // 3️⃣ Enviar solicitud con cURL
     $ch = curl_init($url2);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
