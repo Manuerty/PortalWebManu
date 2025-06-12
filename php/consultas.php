@@ -1077,10 +1077,9 @@ function exect_Insert_From_IA($arrayValores){
 
     $parm = $arrayValores;
 
-        echo "<pre>";
-        print_r($sql);
-        print_r($arrayValores);
-        echo "</pre>";
+    
+    var_dump("SQL generado:", $sql);
+    var_dump("Parámetros (arrayValores):", $arrayValores);
     $stmt = sqlsrv_prepare($conn, $sql, $parm);
 
     if (!sqlsrv_execute($stmt)) {
