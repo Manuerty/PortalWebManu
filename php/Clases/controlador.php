@@ -1135,20 +1135,47 @@ class Controlador
                                             $tiposarchivo, 
                                             $archivoTemp,
                                             $nombre_archivo);
-                if($subida === false){
-                    $msgError = "Error al subir el archivo al servidor.";
-                    $msgError .= "-";
-                    $msgError .= $this -> miEstado -> IdTipoPropietario;
-                    $msgError .= "-";
-                    $msgError .= $this -> miEstado -> IdPropietarioAuxiliar;
-                    $msgError .= "-";
-                    $msgError .= $tiposarchivo;
-                    $msgError .= "-";
-                    $msgError .= $archivoTemp;
-                    $msgError .= "-";
-                    $msgError .= $nombre_archivo;
-                }
             }
+
+            // 🧩 AHORA necesitas construir el arrayValores igual que en estado 4.4
+            if ($subida === true) {
+                $arrayForm = array_filter($this->miEstado->formularios, function ($form) {
+                    return $form["Estado"] == 6.2;
+                });
+
+                $arrayIntermedio = array_shift($arrayForm);
+                $arraycampos = $arrayIntermedio["Campos"];
+                $arrayValores = array();
+
+                foreach ($arraycampos as $campo) {
+                    if ($campo["OUTPUT"] == 0 && $campo["Mostrar"] == 0 && $campo["ValorAdicional"] == null) {
+                        $valorCampo = isset($campo["VariableAlmacenada"]) ? $this->miEstado->{$campo["VariableAlmacenada"]} : $campo["ValorPorDefecto"];
+
+                        if ($valorCampo == "%now%") {
+                            $valorCampo = date('Ymd H:i:s');
+                        } elseif ($valorCampo == '%randmKey%') {
+                            $caracteres = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                            $claveGenerada = '';
+                            for ($i = 0; $i < 9; $i++) {
+                                $claveGenerada .= $caracteres[rand(0, strlen($caracteres) - 1)];
+                            }
+                            $valorCampo = $claveGenerada;
+                        }
+                        array_push($arrayValores, $valorCampo);
+                    } elseif ($campo["TipoDatoHtml"] == "file") {
+                        array_push($arrayValores, $archivoTemp);
+                    } elseif ($campo["Variable"] == "tipoArchivo") {
+                        array_push($arrayValores, $tiposarchivo);
+                    } elseif ($campo["Variable"] == "Documento") {
+                        array_push($arrayValores, $nombre_archivo);
+                    }
+                }
+
+                $resultadoEjecucion = exect_Insert_From_IA($arrayValores);
+            } else {
+                $resultadoEjecucion = false;
+            }
+
 
             
             
@@ -1244,11 +1271,6 @@ class Controlador
                                             $arrayDatos[3],
                                             $nombre_archivo);
 
-            var_dump($this -> miEstado -> IdTipoPropietario,
-                    $this -> miEstado -> IdPropietarioAuxiliar,
-                    $arrayDatos[2][0],
-                    $arrayDatos[3],
-                    $nombre_archivo);
                                 
             $resultadoEjecucion = exect_Insert_From_DinamicoSubidaArchivos($arrayDatos[2],$arrayDatos[3]);
             if($resultadoEjecucion == false ){

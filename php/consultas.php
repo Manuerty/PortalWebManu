@@ -1038,6 +1038,74 @@ function exect_Insert_From_Dinamico($arrayValores){
     sqlsrv_close( $conn );
 }
 
+function exect_Insert_From_IA($arrayValores){
+    $conn = ConexionBD($_SESSION["Controlador"]->miEstado->IP, $_SESSION["Controlador"]->miEstado->bbdd);
+    $sql = "";
+
+    $arrayForm = array_filter($_SESSION["Controlador"]->miEstado->formularios, function ($form) {
+        return $form["Estado"] == 6.2;
+    });
+
+    $arrayEjecutable = array_shift($arrayForm);
+
+    if ($arrayEjecutable["Instruccion"] == "INSERT_UP") {
+        $sql .= "INSERT INTO ".$arrayEjecutable["Pro_Tabla"].' (';
+        $sql2 ='VALUES (';
+        for ($i = 0; $i < count($arrayEjecutable['Campos']); $i++){
+            if($i == (count($arrayEjecutable['Campos']) - 1)){
+                $sql .= $arrayEjecutable['Campos'][$i]["Variable"].')';
+                $sql2 .= ' ?)';
+            }elseif($arrayEjecutable['Campos'][$i]["OUTPUT"] == 0){
+                $sql .= $arrayEjecutable['Campos'][$i]["Variable"].',';
+                $sql2 .= ' ?,';
+            }
+        }
+        $sql .= $sql2;
+    } elseif ($arrayEjecutable["Instruccion"] == "EXECUTE") {
+        $sql .= "DECLARE @".$arrayEjecutable['Campos'][0]["Variable"]." INT ";
+        $sql .= "EXECUTE ".$arrayEjecutable["Pro_Tabla"].' ';
+        for ($i = 0; $i < count($arrayEjecutable['Campos']); $i++){
+            if($i == (count($arrayEjecutable['Campos']) - 1)){
+                $sql .= '@'.$arrayEjecutable['Campos'][$i]["Variable"].' = ?';
+            } elseif($arrayEjecutable['Campos'][$i]["OUTPUT"] == 0){
+                $sql .= '@'.$arrayEjecutable['Campos'][$i]["Variable"].' = ?,';
+            } else {
+                $sql .= '@'.$arrayEjecutable['Campos'][$i]["Variable"]." = ".'@'.$arrayEjecutable['Campos'][$i]["Variable"]." OUTPUT,";
+            }
+        }
+    }
+
+    $parm = $arrayValores;
+    $stmt = sqlsrv_prepare($conn, $sql, $parm);
+
+    if (!sqlsrv_execute($stmt)) {
+        die(print_r(sqlsrv_errors(), true));
+        return false;
+    } else {
+        $valoresInsertados = array();
+        $sqlReturn = "SELECT TOP 1 IdArchivo AS id, Documento AS Descripcion, tipoArchivo AS descripcion2, FechaCreacionRegistro AS descripcionLateral,
+                      IdTipoPropietario, IdPropietario, Documento, Firmable, Firmado
+                      FROM dbo.vw_PEArchivosPersonal 
+                      WHERE idpersonal = ? ORDER BY IdArchivo DESC";
+        $tipoDoc = 3;
+
+        $parm = array($_SESSION["Controlador"]->miEstado->IdPersonal);
+        sqlsrv_free_stmt($stmt);
+        $stmt = sqlsrv_query($conn, $sqlReturn, $parm);
+        if ($stmt === false) {
+            die(print_r(sqlsrv_errors(), true));
+        } else {
+            while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                $row["tipoDocPortal"] = $tipoDoc;
+                array_push($valoresInsertados, $row);
+            }
+            return $valoresInsertados;
+        }
+    }
+
+    sqlsrv_close($conn);
+}
+
 function exect_Insert_From_DinamicoSubidaArchivos($arrayValores,$ruta){
     $conn = ConexionBD($_SESSION["Controlador"] -> miEstado -> IP, $_SESSION["Controlador"] -> miEstado -> bbdd);
     $sql = 'INSERT INTO dbo.PEArchivosAuxiliar
