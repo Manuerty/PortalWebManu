@@ -461,75 +461,18 @@ class Controlador
     }
 
     //Subir los archivos mediante llamada al servicio web
-    function subirArchivosServicioWeb($pin, $IdtipoPropietario, $idPropietario, $idArchivoTipo, $url, $nombre_archivo) {
-    $log = "";
-    $log .= "📅 Fecha: " . date('Y-m-d H:i:s') . "\n";
-    $log .= "📁 Nombre archivo: $nombre_archivo\n";
-    $log .= "🌐 URL del archivo: $url\n";
-
-    // 1️⃣ Verificar si la URL del archivo remoto existe
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_NOBODY, true); // No descargar el cuerpo, solo verificar headers
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-    curl_exec($ch);
-    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-
-    if ($http_code != 200) {
-        $log .= "❌ El archivo remoto no es accesible (HTTP $http_code)\n";
-        file_put_contents(__DIR__ . "/log_subida.txt", $log . "\n\n", FILE_APPEND);
-        return false;
-    }
-
-    $log .= "✅ El archivo remoto es accesible (HTTP $http_code)\n";
-
-    // 2️⃣ Construir la URL de subida
-    $url2 = "http://onixsw.esquio.es:8080/Funciones.aspx?SubirArchivo=1&pin=" . urlencode($pin) .
-        "&IdTipoPropietario=" . urlencode($IdtipoPropietario) .
-        "&IdPropietario=" . urlencode($idPropietario) .
-        "&IdArchivoTipo=" . urlencode($idArchivoTipo) .
-        "&URL=" . urlencode($url) .
-        "&NombreArchivo=" . urlencode($nombre_archivo);
-
-    $log .= "🔗 URL generada para la subida:\n$url2\n";
-    var_dump($url2);
-    // 3️⃣ Enviar solicitud con cURL
-    $ch = curl_init($url2);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 15);
-    curl_setopt($ch, CURLOPT_USERAGENT, 'ArchivoUploader/1.0');
-
-    $response = curl_exec($ch);
-    $curl_error = curl_error($ch);
-    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-
-    $log .= "📨 Código HTTP de respuesta: $http_code\n";
-    if ($curl_error) {
-        $log .= "❌ Error de cURL: $curl_error\n";
-        file_put_contents(__DIR__ . "/log_subida.txt", $log . "\n\n", FILE_APPEND);
-        return false;
-    }
-
-    if ($response === false) {
-        $log .= "❌ La respuesta del servidor es falsa (fallo al ejecutar cURL).\n";
-        file_put_contents(__DIR__ . "/log_subida.txt", $log . "\n\n", FILE_APPEND);
-        return false;
-    }
-
-    $log .= "📨 Respuesta del servidor:\n$response\n";
-
-    if (stripos($response, 'ok') !== false) {
-        $log .= "✅ Subida exitosa.\n";
-        file_put_contents(__DIR__ . "/log_subida.txt", $log . "\n\n", FILE_APPEND);
+    function subirArchivosServicioWeb($pin,$IdtipoPropietario,$idPropietario,$idArchivoTipo,$url,$nombre_archivo){
+        $url2 = "http://onixsw.esquio.es:8080/Funciones.aspx?SubirArchivo=1&pin=".$pin.
+        "&IdTipoPropietario=".$IdtipoPropietario.'&IdPropietario='.$idPropietario.
+        '&IdArchivoTipo='.$idArchivoTipo.'&URL='.urlencode($url).'&NombreArchivo='.$nombre_archivo;
+       
+        try {
+            $response = file_get_contents($url2);
+        } catch (\Throwable $th) {
+            $platano=1; 
+        }
         return true;
-    } else {
-        $log .= "⚠️ La respuesta no contiene 'ok'. Subida posiblemente fallida.\n";
-        file_put_contents(__DIR__ . "/log_subida.txt", $log . "\n\n", FILE_APPEND);
-        return false;
     }
-}
 
 
 
