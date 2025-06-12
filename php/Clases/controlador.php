@@ -1116,6 +1116,8 @@ class Controlador
             //SUBIR ARCHIVOS DIRECTAMTNE DE LA IMAGEN USADA PARA EL ANALISIS DE IA//
             if ($c == 6.2 && $this->miEstado->archivoAdjuntoTemporal != null) {
 
+                $this -> miEstado -> Estado = 4.4;
+
                 foreach (array_reverse($this -> miEstado -> arrayDatosAux) as $item) {
                     if (isset($item["tipoDocPortal"]) && $item["tipoDocPortal"] == 9.2) {
                         $ultimoElemento = $item;
@@ -1137,44 +1139,15 @@ class Controlador
                                             $nombre_archivo);
             }
 
-            // 🧩 AHORA necesitas construir el arrayValores igual que en estado 4.4
-            if ($subida === true) {
-                $arrayForm = array_filter($this->miEstado->formularios, function ($form) {
-                    return $form["Estado"] == 6.2;
-                });
-
-                $arrayIntermedio = array_shift($arrayForm);
-                $arraycampos = $arrayIntermedio["Campos"];
-                $arrayValores = array();
-
-                foreach ($arraycampos as $campo) {
-                    if ($campo["OUTPUT"] == 0 && $campo["Mostrar"] == 0 && $campo["ValorAdicional"] == null) {
-                        $valorCampo = isset($campo["VariableAlmacenada"]) ? $this->miEstado->{$campo["VariableAlmacenada"]} : $campo["ValorPorDefecto"];
-
-                        if ($valorCampo == "%now%") {
-                            $valorCampo = date('Ymd H:i:s');
-                        } elseif ($valorCampo == '%randmKey%') {
-                            $caracteres = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-                            $claveGenerada = '';
-                            for ($i = 0; $i < 9; $i++) {
-                                $claveGenerada .= $caracteres[rand(0, strlen($caracteres) - 1)];
-                            }
-                            $valorCampo = $claveGenerada;
-                        }
-                        array_push($arrayValores, $valorCampo);
-                    } elseif ($campo["TipoDatoHtml"] == "file") {
-                        array_push($arrayValores, $archivoTemp);
-                    } elseif ($campo["Variable"] == "tipoArchivo") {
-                        array_push($arrayValores, $tiposarchivo);
-                    } elseif ($campo["Variable"] == "Documento") {
-                        array_push($arrayValores, $nombre_archivo);
-                    }
-                }
-
-                $resultadoEjecucion = exect_Insert_From_IA($arrayValores);
-            } else {
-                $resultadoEjecucion = false;
+            $resultadoEjecucion = exect_Insert_From_DinamicoSubidaArchivos($tiposarchivo,$archivoTemp);
+            if($resultadoEjecucion == false ){
+                $msgError = "Ha ocurrido un error al insertal el registro";
+            }else{
+                array_unshift($_SESSION["Controlador"] -> miEstado -> Documentos,$resultadoEjecucion[0]);
             }
+        //array_unshift($_SESSION["Controlador"] -> miEstado -> Documentos,$resultadoEjecucion[0]);
+            
+            $this -> miEstado -> adjuntarDocumentoFormAutomatico = 0; 
 
 
             
@@ -1188,6 +1161,8 @@ class Controlador
                 }
                 $this -> miEstado -> IdPropietarioAuxiliar = $ultimoElemento['id'];
             }
+
+            $this -> miEstado -> Estado = 6.2;
         }elseif(!empty($arrayDatos) && $arrayDatos[0] == 0 && $arrayDatos[1] == 3 && isset($arrayDatos[2])  && $this -> miEstado -> tipo_App == 2 ){
         //********************************************/
         //PORTAL EMPLEADO Insertar Formularios dinamcos
@@ -1273,6 +1248,9 @@ class Controlador
 
                                 
             $resultadoEjecucion = exect_Insert_From_DinamicoSubidaArchivos($arrayDatos[2],$arrayDatos[3]);
+
+            var_dump($arrayDatos[2]);
+            var_dump($arrayDatos[3]);
             if($resultadoEjecucion == false ){
                 $msgError = "Ha ocurrido un error al insertal el registro";
             }else{
