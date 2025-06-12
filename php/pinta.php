@@ -954,7 +954,9 @@ function DibujaLineas_PortalEmpleado(){
                 $acciones_linea .= '<button onclick="cargarModalFormularioDinamico('.$Nombreform.',%IdProp%,%arrayValoresResgistroModal%)"    style="all: initial;cursor: pointer; padding: 0; border: none; margin: 0;display:%DispAccionC%;"><img class="pdf_icono" src="Img/IconosAcciones/Observaciones.png"></button>';    
             }
             //modalFormularioMaterialesProyectos
-            $acciones_globales .= '<button onclick="cargarAsistenteIa()" class="btn_acciones2"><img src="Img/Portal_Empleado_Nuevo2IA.png" width="61" height="60"></button>';
+           
+            $acciones_globales .= '<button onclick="cargarModalFormularioDinamico()" class="btn_acciones2"><img src="Img/Portal_Empleado_Nuevo2IA.png" width="61" height="60"></button>';
+            //$acciones_globales .= '<button onclick="cargarAsistenteIa()" class="btn_acciones2"><img src="Img/Portal_Empleado_Nuevo2IA.png" width="61" height="60"></button>';
             $acciones_globales .= '<button onclick="cargarModalFormularioDinamico('.$Nombreform.')" class="btn_acciones"><img src="Img/Portal_Empleado_Nuevo2.png"></button>';    
             $acciones_globales .= cargaModalesCustom();
         }
