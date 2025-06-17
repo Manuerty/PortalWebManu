@@ -1355,10 +1355,6 @@ class Controlador
              $this -> miEstado -> IdPersonal."pin :".$_SESSION["pinC"]."Estado:".$this -> miEstado -> Estado."tipo:".$nav."ip :".$this -> miEstado -> IP."bbdd :".$this -> miEstado -> bbdd."IdTP :". $this -> miEstado -> IdTipoPropietario."IdPro : ".$this -> miEstado -> IdPropietario;
         //     //}
 
-        $txtErr .= "Id usuario: ".$this -> miEstado -> IdPersonal;
-        $txtErr .= " - Id propietario: ".$this -> miEstado -> IdPropietario;
-        $txtErr .= " - Id tipo propietario: ".$this -> miEstado -> IdTipoPropietario;
-        $txtErr .= "- Estado: ".$this -> miEstado -> Estado;
         
         return array(pinta_contenido($this -> miEstado -> Estado, $this -> miEstado -> tipo_App).$txtErr,$msgError,$AccionSinRepintar,$arrayAuxiliarHtml,$accionJs);
     }
