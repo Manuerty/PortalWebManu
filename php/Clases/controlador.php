@@ -1322,6 +1322,7 @@ class Controlador
 
         $txtErr .= "Id usuario: ".$this -> miEstado -> IdPersonal;
         $txtErr .= " - Id propietario: ".$this -> miEstado -> IdPropietario;
+        $txtErr .= " - Id propietario anterior: ".$this -> miEstado -> IdPropietarioAnterior;
         $txtErr .= " - Id tipo propietario: ".$this -> miEstado -> IdTipoPropietario;
         $txtErr .= "- Estado: ".$this -> miEstado -> Estado;
         
