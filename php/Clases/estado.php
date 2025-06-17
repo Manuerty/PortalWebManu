@@ -8,6 +8,7 @@ class Estado{
     //variables de estado?
     public $Estado;
     public $EstadosAnteriores = array();
+    public $IdsPropietariosAnteriores = array();
     public $IdIdentidad;
     public $datosPersonal = array();
 

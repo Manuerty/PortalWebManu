@@ -1111,7 +1111,7 @@ class Controlador
             $resultado = insertProyectosTareaMaterial($c,$arrayDatos[2]);
             
             $this -> miEstado -> arrayDatosAux = extraerRecursosFaseProyecto($this -> miEstado -> IdPropietario,$tipoMat);
-            $this -> miEstado -> IdPropietarioAnterior = $this -> miEstado -> IdPropietario;
+            $this->miEstado->IdsPropietariosAnteriores[] = $this->miEstado->IdPropietario;
             $ultimoElemento = null;
 
             //SUBIR ARCHIVOS DIRECTAMTNE DE LA IMAGEN USADA PARA EL ANALISIS DE IA//
@@ -1165,9 +1165,20 @@ class Controlador
             }
 
             
-            if($this -> miEstado -> IdPropietarioAnterior != $this -> miEstado -> IdPropietario){
-                $this -> miEstado -> IdPropietario = $this -> miEstado -> IdPropietarioAnterior;
+            $anteriores = $this->miEstado->IdsPropietariosAnteriores;
+
+            if (is_array($anteriores) && !empty($anteriores)) {
+                $ultimoPropietario = end($anteriores); // Último valor del array
+
+                if ($this->miEstado->IdPropietario !== $ultimoPropietario) {
+                    $this->miEstado->IdPropietario = $ultimoPropietario;
+                }
+            } else {
+                // Si el array está vacío, se asigna cadena vacía
+                $this->miEstado->IdPropietario = "";
             }
+
+
 
 
             $this -> miEstado -> Estado = 6.2;
