@@ -263,7 +263,11 @@ class Controlador
 
                 $this -> miEstado -> Estado = $estadoAnterior;
 
-                if($this -> miEstado -> Estado == 6.2){
+
+                if($this -> miEstado -> Estado == 6){
+                    $this -> miEstado -> IdsPropietariosAnteriores = array();
+                }
+                elseif($this -> miEstado -> Estado == 6.2){
                     $anteriores = $this->miEstado->IdsPropietariosAnteriores;
 
                     if (is_array($anteriores) && !empty($anteriores)) {
@@ -277,6 +281,8 @@ class Controlador
                         $this->miEstado->IdPropietario = "";
                     }
                 }
+
+
 
             }
             //reinicializar variables
