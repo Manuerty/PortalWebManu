@@ -1111,10 +1111,12 @@ class Controlador
             $resultado = insertProyectosTareaMaterial($c,$arrayDatos[2]);
             
             $this -> miEstado -> arrayDatosAux = extraerRecursosFaseProyecto($this -> miEstado -> IdPropietario,$tipoMat);
+            $this -> miEstado -> IdPropietarioAnterior = $this -> miEstado -> IdPropietario;
             $ultimoElemento = null;
 
             //SUBIR ARCHIVOS DIRECTAMTNE DE LA IMAGEN USADA PARA EL ANALISIS DE IA//
             if ($c == 6.2 && $this->miEstado->archivoAdjuntoTemporal != null) {
+
 
                 $this -> miEstado -> Estado = 4.4;
 
@@ -1161,6 +1163,12 @@ class Controlador
                 }
                 $this -> miEstado -> IdPropietarioAuxiliar = $ultimoElemento['id'];
             }
+
+            
+            if($this -> miEstado -> IdPropietarioAnterior != $this -> miEstado -> IdPropietario){
+                $this -> miEstado -> IdPropietario = $this -> miEstado -> IdPropietarioAnterior;
+            }
+
 
             $this -> miEstado -> Estado = 6.2;
         }elseif(!empty($arrayDatos) && $arrayDatos[0] == 0 && $arrayDatos[1] == 3 && isset($arrayDatos[2])  && $this -> miEstado -> tipo_App == 2 ){
