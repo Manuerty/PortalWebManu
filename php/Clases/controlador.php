@@ -259,12 +259,30 @@ class Controlador
                 $this -> miEstado -> cargarForm = 0;
             }else{
                 $estadoAnterior = array_shift($this -> miEstado -> EstadosAnteriores);
+
+
                 $this -> miEstado -> Estado = $estadoAnterior;
+
+                if($this -> miEstado -> Estado == 6.2){
+                    $anteriores = $this->miEstado->IdsPropietariosAnteriores;
+
+                    if (is_array($anteriores) && !empty($anteriores)) {
+                        $ultimoPropietario = end($anteriores); // Último valor del array
+
+                        if ($this->miEstado->IdPropietario !== $ultimoPropietario) {
+                            $this->miEstado->IdPropietario = $ultimoPropietario;
+                        }
+                    } else {
+                        // Si el array está vacío, se asigna cadena vacía
+                        $this->miEstado->IdPropietario = "";
+                    }
+                }
+
             }
             //reinicializar variables
             
             $this -> miEstado -> nombreDocumentoPadre = null;
-            $this -> miEstado -> IdPropietario = null; 
+            //$this -> miEstado -> IdPropietario = null; 
         }else{
             array_unshift($this -> miEstado -> EstadosAnteriores , $this -> miEstado -> Estado);
             $this -> miEstado -> Estado = $ps;
@@ -420,6 +438,7 @@ class Controlador
                     $this -> miEstado -> acciones["archivos"] = 1;
                     $this -> miEstado -> acciones["anadirLineaCustom"] = 1;
                     $this -> miEstado -> acciones["ModificarLineaCustom"] = 1;
+                    $this -> miEstado -> IdsPropietariosAnteriores[] = $this -> miEstado -> IdPropietario;
                     break;
                 case 7:
                     $this -> miEstado -> acciones["accionBuscarMenu"] = 1;
@@ -1111,7 +1130,6 @@ class Controlador
             $resultado = insertProyectosTareaMaterial($c,$arrayDatos[2]);
             
             $this -> miEstado -> arrayDatosAux = extraerRecursosFaseProyecto($this -> miEstado -> IdPropietario,$tipoMat);
-            $this->miEstado->IdsPropietariosAnteriores[] = $this->miEstado->IdPropietario;
             $ultimoElemento = null;
 
             //SUBIR ARCHIVOS DIRECTAMTNE DE LA IMAGEN USADA PARA EL ANALISIS DE IA//
@@ -1333,7 +1351,6 @@ class Controlador
 
         $txtErr .= "Id usuario: ".$this -> miEstado -> IdPersonal;
         $txtErr .= " - Id propietario: ".$this -> miEstado -> IdPropietario;
-        $txtErr .= " - Id propietario anterior: ".$this -> miEstado -> IdPropietarioAnterior;
         $txtErr .= " - Id tipo propietario: ".$this -> miEstado -> IdTipoPropietario;
         $txtErr .= "- Estado: ".$this -> miEstado -> Estado;
         

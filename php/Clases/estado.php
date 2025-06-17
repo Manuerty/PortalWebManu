@@ -78,7 +78,6 @@ class Estado{
     //public $camposFormularios = null;
     public $IdPropietarioAuxiliar;
 
-    public $IdPropietarioAnterior;
 
     //Datos de conexion
     public $IP;
