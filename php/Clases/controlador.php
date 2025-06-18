@@ -113,7 +113,8 @@ class Controlador
         }
         //pruebas
         if($_SESSION["pinC"] == 123654){
-                $this -> miEstado -> IP = '192.168.204.230';
+            //$this -> miEstado -> IP = '192.168.204.230';
+            $this -> miEstado -> IP = '192.168.204.169';
         }elseif ($_SESSION["pinC"] == '65814415D75C') {
             $this -> miEstado -> IP = '85.215.231.65,23459';
         }
